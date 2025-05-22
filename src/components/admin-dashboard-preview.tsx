@@ -372,7 +372,10 @@ export function AdminDashboardPreview() {
                 }`}
                 onClick={() => {
                   setCurrentSlide(index);
-                  document.querySelector(`[data-value="${slide.id}"]`)?.click();
+                  const tabTrigger = document.querySelector(`[data-value="${slide.id}"]`) as HTMLElement;
+                  if (tabTrigger) {
+                    tabTrigger.click();
+                  }
                 }}
               />
             ))}
