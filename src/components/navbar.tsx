@@ -3,29 +3,75 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { MobileNav } from "@/components/mobile-nav";
+import { ChevronDown } from "lucide-react";
+
+interface NavbarProps {
+  activeSection?: string;
+  onSectionChange?: (section: string) => void;
+}
 
 const navItems = [
-  { label: "Accueil", href: "#" },
-  { label: "Caractéristiques", href: "#features" },
-  { label: "Tarification", href: "#pricing" },
-  { label: "Témoignages", href: "#testimonials" },
-  { label: "Contact", href: "#contact" },
+  { label: "Accueil", href: "#home", section: "home" },
+  { label: "Fonctionnalités", href: "#features", section: "features" },
+  { label: "Démonstration", href: "#showcase", section: "showcase" },
+  { label: "Administration", href: "#admin-dashboard", section: "admin-dashboard" },
+  { label: "Témoignages", href: "#testimonials", section: "testimonials" },
+  { label: "Tarifs", href: "#pricing", section: "pricing" },
+  { label: "Contact", href: "#contact", section: "contact" },
 ];
 
-export function Navbar() {
+export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      const currentScrollY = window.scrollY;
+      
+      // Determine if we're scrolled past the initial position
+      setIsScrolled(currentScrollY > 10);
+      
+      // Handle navbar hiding on scroll down / showing on scroll up
+      if (currentScrollY > lastScrollY && currentScrollY > 200) {
+        setIsVisible(false); // Scrolling down
+      } else {
+        setIsVisible(true); // Scrolling up or at top
+      }
+      
+      setLastScrollY(currentScrollY);
+      
+      // Update active section based on scroll position
+      if (onSectionChange) {
+        const sections = navItems.map(item => item.section);
+        for (const section of sections.reverse()) {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= 100) {
+              onSectionChange(section);
+              break;
+            }
+          }
+        }
+      }
     };
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [lastScrollY, onSectionChange]);
+
+  const handleNavItemClick = (section: string) => {
+    if (onSectionChange) {
+      onSectionChange(section);
+    }
+  };
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-30 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-30 transition-all duration-300 transform ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      } ${
         isScrolled
           ? "bg-white/90 shadow-md backdrop-blur-sm py-3"
           : "bg-transparent py-5"
@@ -33,22 +79,37 @@ export function Navbar() {
     >
       <div className="container flex items-center justify-between">
         <Logo />
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden lg:flex items-center space-x-1">
           {navItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="text-morocco-navy hover:text-morocco-terracotta font-medium transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavItemClick(item.section);
+                const element = document.getElementById(item.section);
+                if (element) {
+                  element.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                activeSection === item.section
+                  ? "text-morocco-terracotta"
+                  : "text-morocco-navy hover:text-morocco-terracotta"
+              }`}
             >
               {item.label}
             </a>
           ))}
         </nav>
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden lg:flex items-center space-x-4">
           <Button variant="outline" className="border-morocco-blue text-morocco-blue hover:bg-morocco-blue/10">
             Se connecter
           </Button>
-          <Button className="btn-primary">S'inscrire</Button>
+          <Button className="bg-morocco-blue hover:bg-morocco-deep-blue text-white group">
+            S'inscrire
+            <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
+          </Button>
         </div>
         <MobileNav navItems={navItems} />
       </div>
