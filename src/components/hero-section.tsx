@@ -2,8 +2,11 @@
 import { ArrowRight, Building, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MoroccanPattern } from "@/components/ui/pattern";
+import { useNavigate } from "react-router-dom";
 
 export function HeroSection() {
+  const navigate = useNavigate();
+
   return (
     <section className="relative pt-32 pb-20 overflow-hidden">
       <div className="container relative z-10">
@@ -22,8 +25,13 @@ export function HeroSection() {
               Demander une démo
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button size="lg" variant="outline" className="border-morocco-blue text-morocco-blue hover:bg-morocco-blue/10">
-              Découvrir les fonctionnalités
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-morocco-blue text-morocco-blue hover:bg-morocco-blue/10"
+              onClick={() => navigate("/admin")}
+            >
+              Espace administrateur
             </Button>
           </div>
           <div className="mt-12 flex flex-wrap justify-center gap-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
@@ -37,10 +45,14 @@ export function HeroSection() {
         </div>
 
         <div className="mt-16 relative max-w-5xl mx-auto animate-scale-in" style={{ animationDelay: "0.4s" }}>
-          <div className="aspect-[16/9] bg-gradient-to-br from-morocco-blue to-morocco-deep-blue rounded-xl shadow-2xl overflow-hidden border-4 border-white">
-            <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" alt="Dashboard Buildora" className="w-full h-full object-cover opacity-90 mix-blend-overlay" />
+          <div className="aspect-[16/9] bg-gradient-to-br from-morocco-blue to-morocco-deep-blue rounded-xl shadow-2xl overflow-hidden border-4 border-white relative group">
+            <img 
+              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
+              alt="Dashboard Buildora" 
+              className="w-full h-full object-cover opacity-90 mix-blend-overlay group-hover:scale-105 transition-transform duration-700" 
+            />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-white text-center">
+              <div className="text-white text-center backdrop-blur-sm bg-black/20 p-6 rounded-lg transform transition-all duration-300 group-hover:scale-105">
                 <Building className="w-16 h-16 mb-4 mx-auto" />
                 <p className="text-2xl font-bold">Aperçu du Dashboard</p>
                 <p className="text-sm opacity-80">Interface complète pour gérer vos projets</p>
@@ -51,7 +63,7 @@ export function HeroSection() {
           <div className="absolute -left-16 -top-8 w-40 h-40 bg-morocco-terracotta/20 rounded-full filter blur-3xl animate-float" style={{ animationDelay: "1s" }}></div>
         </div>
       </div>
-      <MoroccanPattern className="opacity-5" />
+      <MoroccanPattern className="opacity-5 animate-rotate-slow" />
     </section>
   );
 }

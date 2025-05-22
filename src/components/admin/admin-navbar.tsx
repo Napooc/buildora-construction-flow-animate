@@ -3,8 +3,9 @@ import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { Bell, LogOut, Mail, User } from "lucide-react";
+import { Bell, LogOut, Mail, User, Settings, Home } from "lucide-react";
 import { useEffect, useState } from "react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface AdminNavbarProps {
   unreadMessages?: number;
@@ -26,13 +27,15 @@ export function AdminNavbar({ unreadMessages = 0 }: AdminNavbarProps) {
       
       try {
         const session = JSON.parse(adminSession);
-        if (!session || !session.isAuthenticated) {
-          console.log("Invalid admin session, redirecting to login");
+        const isExpired = new Date().getTime() - session.timestamp > 24 * 60 * 60 * 1000;
+        
+        if (!session || !session.isAuthenticated || isExpired) {
+          console.log("Invalid or expired admin session, redirecting to login");
+          localStorage.removeItem("adminSession");
           navigate("/admin");
           return;
         }
         
-        console.log("Admin session found:", session);
         setAdminEmail(session.email);
       } catch (error) {
         console.error("Error parsing admin session:", error);
@@ -63,6 +66,11 @@ export function AdminNavbar({ unreadMessages = 0 }: AdminNavbarProps) {
         </div>
         
         <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="text-morocco-blue flex items-center gap-2">
+            <Home className="h-4 w-4" />
+            <span className="hidden sm:inline">Voir le site</span>
+          </Button>
+          
           <div className="relative">
             <Button variant="ghost" size="icon" className="text-morocco-blue relative">
               <Mail className="h-5 w-5" />
@@ -78,21 +86,28 @@ export function AdminNavbar({ unreadMessages = 0 }: AdminNavbarProps) {
             <Bell className="h-5 w-5" />
           </Button>
           
-          <div className="flex items-center gap-2">
-            <div className="bg-morocco-blue/10 rounded-full w-8 h-8 flex items-center justify-center text-morocco-blue">
-              <User className="h-4 w-4" />
-            </div>
-            <span className="text-sm font-medium hidden md:block">{adminEmail}</span>
-          </div>
-          
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={handleLogout}
-            className="text-morocco-terracotta hover:bg-morocco-terracotta/10"
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-2 px-2">
+                <div className="bg-morocco-blue/10 rounded-full w-8 h-8 flex items-center justify-center text-morocco-blue">
+                  <User className="h-4 w-4" />
+                </div>
+                <span className="text-sm font-medium hidden md:block">{adminEmail}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                <span>Paramètres</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2 text-morocco-terracotta" onClick={handleLogout}>
+                <LogOut className="h-4 w-4" />
+                <span>Se déconnecter</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

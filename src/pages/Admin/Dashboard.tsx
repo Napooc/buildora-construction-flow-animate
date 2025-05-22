@@ -7,17 +7,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminNavbar } from "@/components/admin/admin-navbar";
 import { ContactMessages } from "@/components/admin/contact-messages";
 import { AdminHome } from "@/components/admin/admin-home";
-import { BarChart, Users, FileText, Calendar } from "lucide-react";
+import { BarChart, Users, FileText, Calendar, Loader2 } from "lucide-react";
 
 export default function AdminDashboard() {
-  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Verify admin session
     const checkAdminSession = () => {
-      console.log("Checking admin session...");
       const adminSession = localStorage.getItem("adminSession");
       
       if (!adminSession) {
@@ -38,53 +37,50 @@ export default function AdminDashboard() {
         }
         
         console.log("Valid admin session found:", session);
-        setIsAdmin(true);
+        
+        // Fetch messages and other data
+        fetchDashboardData();
       } catch (error) {
         console.error("Error parsing admin session:", error);
         localStorage.removeItem("adminSession");
         navigate("/admin");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    // Get unread message count
-    const fetchUnreadMessages = async () => {
-      try {
-        const { count, error } = await supabase
-          .from('contact_messages')
-          .select('*', { count: 'exact', head: true });
-          
-        if (!error && count !== null) {
-          console.log("Found", count, "unread messages");
-          setUnreadMessages(count);
-        } else if (error) {
-          console.error("Error fetching message count:", error);
-        }
-      } catch (error) {
-        console.error("Error fetching message count:", error);
       }
     };
     
     checkAdminSession();
-    if (isAdmin) {
-      fetchUnreadMessages();
+  }, [navigate]);
+  
+  // Fetch dashboard data
+  const fetchDashboardData = async () => {
+    try {
+      // Get unread message count
+      const { count, error } = await supabase
+        .from('contact_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('read', false);
+          
+      if (!error && count !== null) {
+        console.log("Found", count, "unread messages");
+        setUnreadMessages(count);
+      } else if (error) {
+        console.error("Error fetching message count:", error);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [navigate, isAdmin]);
+  };
   
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-morocco-blue"></div>
+          <Loader2 className="h-16 w-16 text-morocco-blue animate-spin" />
           <p className="text-morocco-blue font-medium">Chargement du tableau de bord...</p>
         </div>
       </div>
     );
-  }
-  
-  if (!isAdmin) {
-    return null; // Will redirect in useEffect
   }
   
   return (

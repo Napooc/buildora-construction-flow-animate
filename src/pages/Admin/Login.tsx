@@ -48,8 +48,6 @@ export default function AdminLogin() {
     setIsLoading(true);
     setError(null);
     
-    console.log("Attempting login with:", { email, password });
-
     if (!email || !password) {
       setError("Veuillez remplir tous les champs");
       setIsLoading(false);
@@ -60,26 +58,17 @@ export default function AdminLogin() {
       // Query the admin_users table to check credentials
       const { data, error: queryError } = await supabase
         .from("admin_users")
-        .select("*")
+        .select("id, email, password")
         .eq("email", email.trim().toLowerCase())
         .single();
 
-      console.log("Login query result:", { data, error: queryError });
-
-      if (queryError) {
-        console.error("Query error:", queryError);
+      if (queryError || !data) {
         setError("Identifiants incorrects. Veuillez réessayer.");
         setIsLoading(false);
         return;
       }
 
-      if (!data) {
-        setError("Utilisateur non trouvé");
-        setIsLoading(false);
-        return;
-      }
-
-      // Compare passwords (in a real app, this should be hashed)
+      // Compare passwords (in a real app, this would be hashed)
       if (data.password === password) {
         // Store admin session in localStorage with timestamp
         const adminSession = {
@@ -89,7 +78,6 @@ export default function AdminLogin() {
           timestamp: new Date().getTime()
         };
         
-        console.log("Setting admin session:", adminSession);
         localStorage.setItem("adminSession", JSON.stringify(adminSession));
         
         toast({
