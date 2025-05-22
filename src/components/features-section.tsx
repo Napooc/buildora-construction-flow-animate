@@ -10,7 +10,7 @@ import {
   Users, 
   Smartphone,
   Play,
-  ArrowRight
+  Info
 } from "lucide-react";
 import { MoroccanPattern } from "@/components/ui/pattern";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,6 @@ const dashboardImages = [
     alt: "Journal de chantier",
     description: "Documentation quotidienne de l'avancement des travaux"
   },
- 
 ];
 
 const features = [
@@ -84,28 +83,28 @@ const features = [
     description: "Recevez des alertes et rappels pour rester informé des échéances et des mises à jour importantes.",
     icon: Bell,
     color: "from-morocco-blue to-morocco-sand",
-    imageIndex: 4,
+    imageIndex: 0,
   },
   {
     title: "Gestion documentaire",
     description: "Stockez et partagez plans, devis et contrats de manière sécurisée avec toute l'équipe.",
     icon: Calendar,
     color: "from-morocco-deep-blue to-morocco-navy",
-    imageIndex: 0,
+    imageIndex: 1,
   },
   {
     title: "Accès multi-utilisateurs",
     description: "Définissez des rôles et permissions spécifiques pour chaque membre de l'équipe du projet.",
     icon: Users,
     color: "from-morocco-terracotta to-morocco-navy",
-    imageIndex: 1,
+    imageIndex: 2,
   },
   {
     title: "Synchronisation mobile",
     description: "Accédez à toutes les fonctionnalités depuis votre appareil mobile, même sur le terrain.",
     icon: Smartphone,
     color: "from-morocco-blue to-morocco-terracotta",
-    imageIndex: 2,
+    imageIndex: 3,
   },
 ];
 
@@ -117,18 +116,15 @@ export function FeaturesSection() {
     // Scroll to the dashboard preview
     const element = document.getElementById("dashboard-preview");
     if (element) {
-      window.scrollTo({
-        top: element.offsetTop - 100,
-        behavior: "smooth"
-      });
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
 
   return (
-    <section id="features" className="relative py-24 overflow-hidden bg-gray-50">
+    <section id="features" className="relative py-24 overflow-hidden bg-gray-50 w-full">
       <MoroccanPattern variant="subtle" className="absolute inset-0" />
       
-      <div className="container relative z-10">
+      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="bg-morocco-gold/10 text-morocco-terracotta px-4 py-1.5 rounded-full text-sm font-medium inline-block mb-4 animate-fade-in">
             Fonctionnalités
@@ -142,27 +138,32 @@ export function FeaturesSection() {
         </div>
 
         {/* Interactive dashboard preview */}
-        <div id="dashboard-preview" className="mb-20 max-w-5xl mx-auto">
-          <h3 className="text-2xl font-bold mb-6 text-center text-morocco-navy">
-            Une interface puissante pour gérer vos projets
-          </h3>
+        <div id="dashboard-preview" className="mb-16 md:mb-20 w-full">
+          <div className="flex flex-col items-center justify-center mb-8">
+            <h3 className="text-2xl md:text-3xl font-bold mb-3 text-morocco-navy text-center">
+              Une interface puissante pour gérer vos projets
+            </h3>
+            <p className="text-gray-600 max-w-2xl text-center mb-8">
+              Explorez notre interface intuitive conçue pour optimiser votre travail quotidien
+            </p>
+          </div>
           
-          <Carousel className="w-full max-w-4xl mx-auto">
+          <Carousel className="w-full max-w-5xl mx-auto">
             <CarouselContent>
               {dashboardImages.map((image, idx) => (
                 <CarouselItem key={idx}>
-                  <div className="p-2">
-                    <Card className="overflow-hidden border-0 shadow-xl rounded-xl">
+                  <div className="p-1 md:p-2">
+                    <Card className="overflow-hidden border-2 border-gray-100 shadow-xl rounded-xl bg-white">
                       <CardContent className="p-0">
                         <div className="relative aspect-video overflow-hidden">
                           <img 
                             src={image.src} 
                             alt={image.alt} 
-                            className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
+                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-                            <h4 className="text-white text-xl font-bold mb-2">{image.alt}</h4>
-                            <p className="text-white/80 text-sm">{image.description}</p>
+                            <h4 className="text-white text-lg md:text-xl font-bold mb-2">{image.alt}</h4>
+                            <p className="text-white/90 text-sm md:text-base">{image.description}</p>
                           </div>
                         </div>
                       </CardContent>
@@ -171,12 +172,13 @@ export function FeaturesSection() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-2" />
-            <CarouselNext className="right-2" />
+            <CarouselPrevious className="left-2 lg:-left-12" />
+            <CarouselNext className="right-2 lg:-right-12" />
           </Carousel>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
+        {/* Features grid layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-8 mt-12">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
@@ -184,32 +186,43 @@ export function FeaturesSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={cn(
-                "relative group rounded-xl p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-300",
-                activeFeature === index ? "ring-2 ring-morocco-blue/50" : ""
+                "relative group rounded-xl p-6 bg-white shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100",
+                activeFeature === index ? "ring-2 ring-morocco-blue" : ""
               )}
             >
               <div className={cn(
-                "w-14 h-14 mb-6 rounded-lg flex items-center justify-center bg-gradient-to-br", 
+                "w-12 h-12 mb-5 rounded-lg flex items-center justify-center bg-gradient-to-br", 
                 feature.color
               )}>
-                <feature.icon className="h-7 w-7 text-white" />
+                <feature.icon className="h-6 w-6 text-white" />
               </div>
               
-              <h3 className="text-xl font-bold mb-3 text-morocco-navy">{feature.title}</h3>
-              <p className="text-gray-600 mb-6">{feature.description}</p>
+              <h3 className="text-lg md:text-xl font-bold mb-3 text-morocco-navy">{feature.title}</h3>
+              <p className="text-gray-600 text-sm md:text-base mb-5">{feature.description}</p>
               
-              <Button
-                onClick={() => handlePlayDemo(index)}
-                size="sm"
-                className="bg-morocco-blue text-white hover:bg-morocco-deep-blue group flex items-center gap-2"
-              >
-                <Play className="h-4 w-4" />
-                <span>Voir la démo</span>
-                <ArrowRight className="h-4 w-4 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-              </Button>
+              <div className="flex justify-between items-center">
+                <Button
+                  onClick={() => handlePlayDemo(index)}
+                  size="sm"
+                  variant="outline"
+                  className="border-morocco-blue text-morocco-blue hover:bg-morocco-blue/5 transition-all"
+                >
+                  <Play className="h-3 w-3 mr-1.5" />
+                  <span>Démo</span>
+                </Button>
+                
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-gray-500 hover:text-morocco-navy hover:bg-gray-100"
+                >
+                  <Info className="h-3.5 w-3.5" />
+                  <span className="sr-only">Plus d'infos</span>
+                </Button>
+              </div>
 
-              {/* Decorative corner */}
-              <div className="absolute -bottom-px -right-px w-8 h-8 bg-gradient-to-br from-transparent to-morocco-gold/20 rounded-bl-3xl" />
+              {/* Corner decoration */}
+              <div className="absolute -bottom-px -right-px w-6 h-6 bg-gradient-to-br from-transparent to-morocco-blue/10 rounded-tl-2xl" />
             </motion.div>
           ))}
         </div>
