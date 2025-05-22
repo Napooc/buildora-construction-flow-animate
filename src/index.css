@@ -118,4 +118,50 @@
   .feature-card {
     @apply rounded-lg p-6 bg-white shadow-md hover:shadow-lg transition-all duration-300;
   }
+  
+  /* Custom animations */
+  .animate-float {
+    animation: float 8s ease-in-out infinite;
+  }
+  
+  .animate-rotate-slow {
+    animation: rotate 120s linear infinite;
+  }
+  
+  /* Glass morphism elements */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-lg;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animation utilities for hero elements */
+.hero-element {
+  @apply transition-all duration-500;
+}
+
+.hero-element:hover {
+  @apply transform scale-105;
+}
+
+/* Full width container class */
+.container-wide {
+  @apply w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 mx-auto;
 }

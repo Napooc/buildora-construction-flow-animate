@@ -57,31 +57,31 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden">
-      <MoroccanPattern variant="animated" className="fixed inset-0 z-0" />
+    <div className="min-h-screen relative overflow-x-hidden w-full">
+      <MoroccanPattern variant="animated" className="fixed inset-0 z-0 opacity-5" />
       
       <Navbar activeSection={activeSection} onSectionChange={handleSectionChange} />
       
-      <main className="relative z-10">
-        <div id="home">
+      <main className="relative z-10 w-full">
+        <div id="home" className="w-full">
           <HeroSection />
         </div>
-        <div id="features">
+        <div id="features" className="w-full">
           <FeaturesSection />
         </div>
-        <div id="showcase">
+        <div id="showcase" className="w-full">
           <ShowcaseSection />
         </div>
-        <div id="admin-dashboard">
+        <div id="admin-dashboard" className="w-full">
           <AdminDashboardPreview />
         </div>
-        <div id="testimonials">
+        <div id="testimonials" className="w-full">
           <TestimonialsSection />
         </div>
-        <div id="pricing">
+        <div id="pricing" className="w-full">
           <PricingSection />
         </div>
-        <div id="contact">
+        <div id="contact" className="w-full">
           <ContactSection />
         </div>
         <CtaSection />
