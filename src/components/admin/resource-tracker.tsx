@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -285,6 +284,8 @@ export function ResourceTracker() {
           value={lowStockItems + maintenanceNeededItems}
           description="Ressources nécessitant attention"
           color="morocco-terracotta"
+          onClick={() => {}}
+          isActive={false}
           alert={true}
         />
       </div>
