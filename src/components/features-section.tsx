@@ -157,7 +157,7 @@ export function FeaturesSection() {
               <p className="text-gray-600 text-sm md:text-base mb-5">{feature.description}</p>
               
               <div className="flex justify-between items-center">
-                <Button onClick={() => handlePlayDemo(index)} size="sm" variant="outline" className="border-morocco-blue hover:bg-morocco-blue/5 transition-all text-zinc-950">
+                <Button onClick={() => handlePlayDemo(index)} size="sm" variant="outline" className="border-morocco-blue transition-all text-zinc-950 bg-zinc-50">
                   <Play className="h-3 w-3 mr-1.5" />
                   <span>Démo</span>
                 </Button>
