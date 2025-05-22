@@ -22,7 +22,7 @@ export default function AdminLogin() {
 
   useEffect(() => {
     // Check if admin is already logged in
-    const checkAdminSession = async () => {
+    const checkAdminSession = () => {
       const adminSession = localStorage.getItem("adminSession");
       
       if (adminSession) {
@@ -34,6 +34,7 @@ export default function AdminLogin() {
             navigate("/admin/dashboard");
           }
         } catch (error) {
+          console.error("Error checking admin session:", error);
           localStorage.removeItem("adminSession");
         }
       }
@@ -48,6 +49,12 @@ export default function AdminLogin() {
     setError(null);
     
     console.log("Attempting login with:", { email, password });
+
+    if (!email || !password) {
+      setError("Veuillez remplir tous les champs");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       // Query the admin_users table to check credentials
@@ -72,15 +79,18 @@ export default function AdminLogin() {
         return;
       }
 
-      // Compare passwords
+      // Compare passwords (in a real app, this should be hashed)
       if (data.password === password) {
-        // Store admin session in localStorage
-        localStorage.setItem("adminSession", JSON.stringify({
+        // Store admin session in localStorage with timestamp
+        const adminSession = {
           id: data.id,
           email: data.email,
           isAuthenticated: true,
           timestamp: new Date().getTime()
-        }));
+        };
+        
+        console.log("Setting admin session:", adminSession);
+        localStorage.setItem("adminSession", JSON.stringify(adminSession));
         
         toast({
           title: "Connexion réussie",
@@ -90,11 +100,11 @@ export default function AdminLogin() {
         navigate("/admin/dashboard");
       } else {
         setError("Mot de passe incorrect");
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Login error:", error);
       setError("Une erreur est survenue. Veuillez réessayer.");
-    } finally {
       setIsLoading(false);
     }
   }
@@ -148,6 +158,7 @@ export default function AdminLogin() {
                   <Input
                     id="password"
                     type="password"
+                    placeholder="temppassword123"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 border-morocco-blue/20 focus:border-morocco-gold"

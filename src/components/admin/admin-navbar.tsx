@@ -19,6 +19,7 @@ export function AdminNavbar({ unreadMessages = 0 }: AdminNavbarProps) {
     const checkAdminSession = () => {
       const adminSession = localStorage.getItem("adminSession");
       if (!adminSession) {
+        console.log("No admin session found, redirecting to login");
         navigate("/admin");
         return;
       }
@@ -26,10 +27,12 @@ export function AdminNavbar({ unreadMessages = 0 }: AdminNavbarProps) {
       try {
         const session = JSON.parse(adminSession);
         if (!session || !session.isAuthenticated) {
+          console.log("Invalid admin session, redirecting to login");
           navigate("/admin");
           return;
         }
         
+        console.log("Admin session found:", session);
         setAdminEmail(session.email);
       } catch (error) {
         console.error("Error parsing admin session:", error);

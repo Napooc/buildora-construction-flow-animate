@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase-client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminNavbar } from "@/components/admin/admin-navbar";
 import { ContactMessages } from "@/components/admin/contact-messages";
@@ -17,9 +17,11 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const checkAdminSession = () => {
+      console.log("Checking admin session...");
       const adminSession = localStorage.getItem("adminSession");
       
       if (!adminSession) {
+        console.log("No admin session found, redirecting to login");
         navigate("/admin");
         return;
       }
@@ -29,11 +31,13 @@ export default function AdminDashboard() {
         const isExpired = new Date().getTime() - session.timestamp > 24 * 60 * 60 * 1000; // 24 hours
         
         if (!session.isAuthenticated || isExpired) {
+          console.log("Admin session invalid or expired, redirecting to login");
           localStorage.removeItem("adminSession");
           navigate("/admin");
           return;
         }
         
+        console.log("Valid admin session found:", session);
         setIsAdmin(true);
       } catch (error) {
         console.error("Error parsing admin session:", error);
@@ -51,8 +55,11 @@ export default function AdminDashboard() {
           .from('contact_messages')
           .select('*', { count: 'exact', head: true });
           
-        if (!error && count) {
+        if (!error && count !== null) {
+          console.log("Found", count, "unread messages");
           setUnreadMessages(count);
+        } else if (error) {
+          console.error("Error fetching message count:", error);
         }
       } catch (error) {
         console.error("Error fetching message count:", error);
@@ -60,8 +67,10 @@ export default function AdminDashboard() {
     };
     
     checkAdminSession();
-    fetchUnreadMessages();
-  }, [navigate]);
+    if (isAdmin) {
+      fetchUnreadMessages();
+    }
+  }, [navigate, isAdmin]);
   
   if (isLoading) {
     return (
