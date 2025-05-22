@@ -80,7 +80,7 @@ export function ProjectFormDialog({ open, onClose, project, onSuccess }: Project
   const onSubmit = async (values: ProjectFormValues) => {
     setIsLoading(true);
     try {
-      // Convert Date object to ISO string for Supabase
+      // Format values for database submission
       const formattedValues = {
         ...values,
         deadline: values.deadline ? values.deadline.toISOString() : null,
@@ -96,6 +96,7 @@ export function ProjectFormDialog({ open, onClose, project, onSuccess }: Project
       }
 
       if (isEditing) {
+        // Editing existing project
         const { error } = await supabase
           .from("projects")
           .update({
@@ -104,26 +105,36 @@ export function ProjectFormDialog({ open, onClose, project, onSuccess }: Project
           })
           .eq("id", project.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error("Error updating project:", error);
+          throw new Error("Erreur lors de la mise à jour: " + error.message);
+        }
         toast.success("Projet mis à jour avec succès");
       } else {
-        // For new projects, ensure we have the required fields
+        // For new projects, create a properly formatted object with all required fields
         const newProject = {
           ...formattedValues,
           delay_days: 0,
           issues: 0,
-          // Ensure name and budget are explicitly set
           name: formattedValues.name,
           budget: formattedValues.budget,
           status: formattedValues.status || "Planification",
-          progress: formattedValues.progress || 0
+          progress: formattedValues.progress || 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         };
 
-        const { error } = await supabase
+        const { error, data } = await supabase
           .from("projects")
-          .insert([newProject]);
+          .insert([newProject])
+          .select();
 
-        if (error) throw error;
+        if (error) {
+          console.error("Error creating project:", error);
+          throw new Error("Erreur lors de la création: " + error.message);
+        }
+        
+        console.log("Project created successfully:", data);
         toast.success("Projet créé avec succès");
       }
       onSuccess();
