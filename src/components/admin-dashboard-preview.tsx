@@ -17,25 +17,25 @@ export function AdminDashboardPreview() {
     {
       id: "dashboard",
       label: "Tableau de bord",
-      image: "/lovable-uploads/0bc97c12-fbf4-46d5-a202-d2f0d85c2051.png",
+      image: "/lovable-uploads/9d79e4ad-94cc-4248-a699-9a4c439b27a7.png",
       description: "Vue d'ensemble des projets et indicateurs clés"
     }, 
     {
       id: "tasks",
       label: "Gestion des tâches",
-      image: "/lovable-uploads/6d543307-13c5-4c42-a238-9c7c46367ffb.png",
+      image: "/lovable-uploads/d54f7138-4b3b-4e86-ae87-a57f0b6fda18.png",
       description: "Organisation des tâches avec tableaux Kanban"
     }, 
     {
       id: "resources",
       label: "Suivi des ressources",
-      image: "/lovable-uploads/543080be-1847-4f3a-8472-44892616b2ed.png",
+      image: "/lovable-uploads/0a2e3895-9768-485d-b14c-74d10ca5776d.png",
       description: "Gestion des matériaux et équipements"
     }, 
     {
       id: "documents",
       label: "Centre de documents",
-      image: "/lovable-uploads/df8a2f69-033f-4aed-a20d-ac8ce51ecfbd.png",
+      image: "/lovable-uploads/855b0fd1-275b-4fb1-8299-8b96609a381b.png",
       description: "Organisation et partage des documents du projet"
     }
   ];

@@ -16,15 +16,15 @@ export function ShowcaseSection() {
   const getImageForTab = (tabId: string) => {
     switch (tabId) {
       case "dashboard":
-        return "/lovable-uploads/0bc97c12-fbf4-46d5-a202-d2f0d85c2051.png";
+        return "/lovable-uploads/9d79e4ad-94cc-4248-a699-9a4c439b27a7.png";
       case "tasks":
-        return "/lovable-uploads/6d543307-13c5-4c42-a238-9c7c46367ffb.png";
+        return "/lovable-uploads/d54f7138-4b3b-4e86-ae87-a57f0b6fda18.png";
       case "resources":
-        return "/lovable-uploads/543080be-1847-4f3a-8472-44892616b2ed.png";
+        return "/lovable-uploads/0a2e3895-9768-485d-b14c-74d10ca5776d.png";
       case "reports":
-        return "/lovable-uploads/df8a2f69-033f-4aed-a20d-ac8ce51ecfbd.png";
+        return "/lovable-uploads/855b0fd1-275b-4fb1-8299-8b96609a381b.png";
       default:
-        return "/lovable-uploads/0bc97c12-fbf4-46d5-a202-d2f0d85c2051.png";
+        return "/lovable-uploads/9d79e4ad-94cc-4248-a699-9a4c439b27a7.png";
     }
   };
 
