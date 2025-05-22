@@ -43,7 +43,7 @@ const dashboardImages = [
     description: "Gestion optimisée de vos équipements et matériaux"
   },
   {
-    src: "h/lovable-uploads/855b0fd1-275b-4fb1-8299-8b96609a381b.png",
+    src: "/lovable-uploads/9d79e4ad-94cc-4248-a699-9a4c439b27a7.png",
     alt: "Journal de chantier",
     description: "Documentation quotidienne de l'avancement des travaux"
   },
