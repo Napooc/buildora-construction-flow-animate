@@ -1,44 +1,9 @@
-
 import { ArrowRight, Building, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MoroccanPattern } from "@/components/ui/pattern";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
-
 export function HeroSection() {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [showDemoDialog, setShowDemoDialog] = useState(false);
-
-  const handleDemoRequest = () => {
-    setShowDemoDialog(true);
-  };
-
-  const goToContactForm = () => {
-    setShowDemoDialog(false);
-    // Scroll to contact form with smooth animation
-    const contactSection = document.getElementById("contact");
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" });
-    }
-    
-    // Show toast message
-    toast({
-      title: "Demande de démo",
-      description: "Remplissez le formulaire pour réserver votre démonstration personnalisée.",
-      variant: "default",
-    });
-  };
-
   return <section className="relative pt-32 pb-20 overflow-hidden">
       <div className="container relative z-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -56,14 +21,11 @@ export function HeroSection() {
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 animate-fade-in" style={{
           animationDelay: "0.2s"
         }}>
-            <Button 
-              size="lg" 
-              className="btn-primary group"
-              onClick={handleDemoRequest}
-            >
+            <Button size="lg" className="btn-primary group">
               Demander une démo
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
+            
           </div>
           <div className="mt-12 flex flex-wrap justify-center gap-6 animate-fade-in" style={{
           animationDelay: "0.3s"
@@ -95,53 +57,5 @@ export function HeroSection() {
         </div>
       </div>
       <MoroccanPattern className="opacity-5 animate-rotate-slow" />
-      
-      {/* Demo Request Dialog */}
-      <Dialog open={showDemoDialog} onOpenChange={setShowDemoDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center text-2xl font-bold text-morocco-deep-blue">Découvrez Buildora</DialogTitle>
-            <DialogDescription className="text-center">
-              Réservez une démonstration personnalisée pour explorer toutes les fonctionnalités de notre solution.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="grid gap-6">
-            <div className="rounded-lg overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1531297484001-80022131f5a1" 
-                alt="Demo Buildora" 
-                className="w-full h-48 object-cover"
-              />
-            </div>
-            
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Présentation personnalisée des fonctionnalités</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Questions et réponses avec nos experts</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Analyse de vos besoins spécifiques</span>
-              </li>
-            </ul>
-          </div>
-          
-          <DialogFooter className="sm:justify-center">
-            <Button 
-              variant="default" 
-              className="bg-morocco-blue hover:bg-morocco-deep-blue w-full sm:w-auto"
-              onClick={goToContactForm}
-            >
-              Réserver maintenant
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </section>;
 }

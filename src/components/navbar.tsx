@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { MobileNav } from "@/components/mobile-nav";
-import { ArrowRight } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { ChevronDown } from "lucide-react";
 
 interface NavbarProps {
   activeSection?: string;
@@ -24,7 +23,6 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const { toast } = useToast();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,20 +49,6 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
     e.preventDefault();
     if (onSectionChange) {
       onSectionChange(section);
-    }
-  };
-
-  const handleDemoClick = () => {
-    // Scroll to contact section
-    const contactSection = document.getElementById("contact");
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" });
-      
-      // Show toast message
-      toast({
-        title: "Demande de démo",
-        description: "Remplissez le formulaire pour réserver votre démonstration personnalisée.",
-      });
     }
   };
 
@@ -96,13 +80,13 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
             </a>
           ))}
         </nav>
-        <div className="hidden lg:flex items-center">
-          <Button 
-            className="bg-morocco-blue hover:bg-morocco-deep-blue text-white group"
-            onClick={handleDemoClick}
-          >
-            Demander une démo
-            <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+        <div className="hidden lg:flex items-center space-x-4">
+          <Button variant="outline" className="border-morocco-blue text-morocco-blue hover:bg-morocco-blue/10">
+            Se connecter
+          </Button>
+          <Button className="bg-morocco-blue hover:bg-morocco-deep-blue text-white group">
+            S'inscrire
+            <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
           </Button>
         </div>
         <MobileNav navItems={navItems} />
