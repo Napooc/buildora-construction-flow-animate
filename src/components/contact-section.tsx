@@ -1,6 +1,7 @@
 
 import { ContactForm } from "@/components/contact-form";
 import { MoroccanPattern } from "@/components/ui/pattern";
+import { CasablancaMap } from "@/components/casablanca-map";
 
 export function ContactSection() {
   return (
@@ -116,6 +117,10 @@ export function ContactSection() {
           <div className="md:col-span-3">
             <ContactForm />
           </div>
+        </div>
+        
+        <div className="mt-16">
+          <CasablancaMap />
         </div>
       </div>
     </section>

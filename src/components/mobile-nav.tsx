@@ -1,8 +1,9 @@
 
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
+import { useToast } from "@/hooks/use-toast";
 
 interface MobileNavProps {
   navItems: { label: string; href: string }[];
@@ -10,9 +11,25 @@ interface MobileNavProps {
 
 export function MobileNav({ navItems }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
+
+  const handleDemoClick = () => {
+    setIsOpen(false);
+    // Scroll to contact section
+    const contactSection = document.getElementById("contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" });
+      
+      // Show toast message
+      toast({
+        title: "Demande de démo",
+        description: "Remplissez le formulaire pour réserver votre démonstration personnalisée.",
+      });
+    }
+  };
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <Button
         variant="ghost"
         size="icon"
@@ -52,11 +69,12 @@ export function MobileNav({ navItems }: MobileNavProps) {
                 ))}
               </ul>
               <div className="mt-6 pt-6 border-t">
-                <Button className="w-full mb-2 btn-primary">
-                  Se connecter
-                </Button>
-                <Button variant="outline" className="w-full">
-                  S'inscrire
+                <Button 
+                  className="w-full mb-2 btn-primary group"
+                  onClick={handleDemoClick}
+                >
+                  Demander une démo
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
             </nav>

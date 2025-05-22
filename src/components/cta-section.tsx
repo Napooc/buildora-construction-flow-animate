@@ -1,8 +1,28 @@
+
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+
 export function CtaSection() {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  const handleDemoClick = () => {
+    // Scroll to contact section
+    const contactSection = document.getElementById("contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" });
+      
+      // Show toast message
+      toast({
+        title: "Contactez-nous",
+        description: "Remplissez le formulaire pour commencer avec Buildora.",
+        variant: "default",
+      });
+    }
+  };
+  
   return <section className="py-20">
       <div className="container">
         <div className="max-w-4xl mx-auto bg-gradient-to-r from-morocco-blue to-morocco-deep-blue rounded-2xl p-10 text-white text-center relative overflow-hidden group hover:shadow-xl transition-all duration-300">
@@ -22,11 +42,14 @@ export function CtaSection() {
               Rejoignez les entreprises qui améliorent leur efficacité et réduisent leurs coûts grâce à Buildora.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button size="lg" className="bg-white text-morocco-blue hover:bg-morocco-sand group">
+              <Button 
+                size="lg" 
+                className="bg-white text-morocco-blue hover:bg-morocco-sand group"
+                onClick={handleDemoClick}
+              >
                 Commencer gratuitement
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
-              
             </div>
           </div>
         </div>

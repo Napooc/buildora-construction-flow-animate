@@ -7,8 +7,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import AdminLogin from "./pages/Admin/Login";
-import AdminDashboard from "./pages/Admin/Dashboard";
 
 const App = () => {
   // Create the client as a state inside the component
@@ -29,8 +27,6 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
