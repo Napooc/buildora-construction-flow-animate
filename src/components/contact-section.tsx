@@ -4,10 +4,10 @@ import { MoroccanPattern } from "@/components/ui/pattern";
 
 export function ContactSection() {
   return (
-    <section className="py-20 relative" id="contact">
+    <section className="py-20 relative w-full" id="contact">
       <MoroccanPattern variant="subtle" color="#1A5F7A" />
       
-      <div className="container px-4 mx-auto">
+      <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
         <div className="max-w-5xl mx-auto text-center mb-16">
           <span className="bg-morocco-blue/10 text-morocco-blue font-medium py-1 px-3 rounded-full text-sm mb-4 inline-block">
             Contactez-nous
@@ -18,7 +18,7 @@ export function ContactSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-5 gap-8">
+        <div className="grid md:grid-cols-5 gap-8 max-w-7xl mx-auto">
           <div className="md:col-span-2 space-y-6">
             <div className="bg-white p-6 md:p-8 rounded-lg shadow-md">
               <h3 className="text-xl font-bold text-morocco-deep-blue mb-4">Nos coordonnées</h3>
@@ -119,7 +119,7 @@ export function ContactSection() {
         </div>
         
         {/* Google Map for Casablanca */}
-        <div className="mt-16 rounded-lg overflow-hidden shadow-lg">
+        <div className="mt-16 rounded-lg overflow-hidden shadow-lg max-w-7xl mx-auto">
           <h3 className="text-xl font-bold text-morocco-deep-blue mb-4 text-center">Nous retrouver</h3>
           <div className="h-96 w-full">
             <iframe 

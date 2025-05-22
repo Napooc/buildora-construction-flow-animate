@@ -1,6 +1,8 @@
 
 #root {
-  text-align: center;
+  width: 100%; 
+  max-width: 100%; 
+  overflow-x: hidden;
 }
 
 html {
@@ -10,6 +12,10 @@ html {
 body {
   overflow-x: hidden;
   overflow-y: auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .logo {
@@ -46,4 +52,22 @@ body {
 
 .read-the-docs {
   color: #888;
+}
+
+/* Full-width container overrides */
+.container-fluid {
+  width: 100%;
+  padding-right: 0;
+  padding-left: 0;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.section-full {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
 }

@@ -92,8 +92,14 @@
     @apply border-border;
   }
 
+  html, body {
+    @apply w-full min-w-full overflow-x-hidden;
+  }
+
   body {
     @apply bg-background text-foreground font-sans;
+    margin: 0;
+    padding: 0;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -132,6 +138,29 @@
   .glass-card {
     @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-lg;
   }
+
+  /* Full width container overrides */
+  .container-full {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-full {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-full {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
 }
 
 @keyframes float {
@@ -163,5 +192,5 @@
 
 /* Full width container class */
 .container-wide {
-  @apply w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 mx-auto;
+  @apply w-full px-4 sm:px-6 lg:px-8 mx-auto;
 }

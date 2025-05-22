@@ -121,10 +121,10 @@ export function FeaturesSection() {
   };
 
   return (
-    <section id="features" className="relative py-24 overflow-hidden bg-gray-50 w-full">
+    <section className="relative py-24 overflow-hidden bg-gray-50 w-full">
       <MoroccanPattern variant="subtle" className="absolute inset-0" />
       
-      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 mx-auto">
+      <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="bg-morocco-gold/10 text-morocco-terracotta px-4 py-1.5 rounded-full text-sm font-medium inline-block mb-4 animate-fade-in">
             Fonctionnalités
@@ -143,12 +143,12 @@ export function FeaturesSection() {
             <h3 className="text-2xl md:text-3xl font-bold mb-3 text-morocco-navy text-center">
               Une interface puissante pour gérer vos projets
             </h3>
-            <p className="text-gray-600 max-w-2xl text-center mb-8">
+            <p className="text-gray-600 max-w-2xl text-center mb-8 mx-auto">
               Explorez notre interface intuitive conçue pour optimiser votre travail quotidien
             </p>
           </div>
           
-          <Carousel className="w-full max-w-5xl mx-auto">
+          <Carousel className="w-full max-w-6xl mx-auto">
             <CarouselContent>
               {dashboardImages.map((image, idx) => (
                 <CarouselItem key={idx}>
@@ -178,7 +178,7 @@ export function FeaturesSection() {
         </div>
 
         {/* Features grid layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-8 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-8 mt-12 max-w-[1800px] mx-auto px-4">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}

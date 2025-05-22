@@ -68,17 +68,26 @@ export function Navbar({
     }
   };
 
-  return <header className={`fixed top-0 left-0 right-0 z-30 transition-all duration-300 transform ${isVisible ? "translate-y-0" : "-translate-y-full"} ${isScrolled ? "bg-white/90 shadow-md backdrop-blur-sm py-3" : "bg-transparent py-5"}`}>
-      <div className="container flex items-center justify-between">
+  return (
+    <header className={`fixed top-0 left-0 right-0 z-30 transition-all duration-300 transform w-full ${isVisible ? "translate-y-0" : "-translate-y-full"} ${isScrolled ? "bg-white/90 shadow-md backdrop-blur-sm py-3" : "bg-transparent py-5"}`}>
+      <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <Logo />
         <nav className="hidden lg:flex items-center space-x-1">
-          {navItems.map(item => <a key={item.href} href={item.href} onClick={e => handleNavItemClick(item.section, e)} className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeSection === item.section ? "text-morocco-terracotta" : "text-morocco-navy hover:text-morocco-terracotta"}`}>
+          {navItems.map(item => (
+            <a 
+              key={item.href} 
+              href={item.href} 
+              onClick={e => handleNavItemClick(item.section, e)} 
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeSection === item.section ? "text-morocco-terracotta" : "text-morocco-navy hover:text-morocco-terracotta"}`}
+            >
               {item.label}
-            </a>)}
+            </a>
+          ))}
         </nav>
         <div className="hidden lg:flex items-center space-x-4">
         </div>
         <MobileNav navItems={navItems} />
       </div>
-    </header>;
+    </header>
+  );
 }

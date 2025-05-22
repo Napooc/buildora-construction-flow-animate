@@ -63,27 +63,27 @@ const Index = () => {
       <Navbar activeSection={activeSection} onSectionChange={handleSectionChange} />
       
       <main className="relative z-10 w-full">
-        <div id="home" className="w-full">
+        <section id="home" className="w-full">
           <HeroSection />
-        </div>
-        <div id="features" className="w-full">
+        </section>
+        <section id="features" className="w-full">
           <FeaturesSection />
-        </div>
-        <div id="showcase" className="w-full">
+        </section>
+        <section id="showcase" className="w-full">
           <ShowcaseSection />
-        </div>
-        <div id="admin-dashboard" className="w-full">
+        </section>
+        <section id="admin-dashboard" className="w-full">
           <AdminDashboardPreview />
-        </div>
-        <div id="testimonials" className="w-full">
+        </section>
+        <section id="testimonials" className="w-full">
           <TestimonialsSection />
-        </div>
-        <div id="pricing" className="w-full">
+        </section>
+        <section id="pricing" className="w-full">
           <PricingSection />
-        </div>
-        <div id="contact" className="w-full">
+        </section>
+        <section id="contact" className="w-full">
           <ContactSection />
-        </div>
+        </section>
         <CtaSection />
       </main>
       

@@ -46,8 +46,8 @@ export function HeroSection() {
         <MoroccanPattern className="opacity-10 animate-rotate-slow absolute inset-0" />
       </div>
       
-      <div className="container relative z-10">
-        <div className="max-w-5xl mx-auto">
+      <div className="w-full px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             style={{ opacity, scale, y }}
             className="text-center md:text-left flex flex-col md:flex-row items-center gap-10 lg:gap-16"

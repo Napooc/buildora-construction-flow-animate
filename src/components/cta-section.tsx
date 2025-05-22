@@ -10,9 +10,10 @@ export function CtaSection() {
     }
   };
 
-  return <section className="py-20">
-      <div className="container">
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-morocco-blue to-morocco-deep-blue rounded-2xl p-10 text-white text-center relative overflow-hidden group hover:shadow-xl transition-all duration-300">
+  return (
+    <section className="py-20 w-full">
+      <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
+        <div className="max-w-6xl mx-auto bg-gradient-to-r from-morocco-blue to-morocco-deep-blue rounded-2xl p-10 text-white text-center relative overflow-hidden group hover:shadow-xl transition-all duration-300">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.2),transparent_40%)]"></div>
             <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-[radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.1),transparent_40%)]"></div>
@@ -41,5 +42,6 @@ export function CtaSection() {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 }
