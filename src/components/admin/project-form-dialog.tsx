@@ -86,6 +86,15 @@ export function ProjectFormDialog({ open, onClose, project, onSuccess }: Project
         deadline: values.deadline ? values.deadline.toISOString() : null,
       };
 
+      // Ensure name and budget are always provided (required by DB schema)
+      if (!formattedValues.name) {
+        throw new Error("Le nom du projet est requis");
+      }
+
+      if (typeof formattedValues.budget !== 'number' || formattedValues.budget <= 0) {
+        throw new Error("Le budget doit être un nombre positif");
+      }
+
       if (isEditing) {
         const { error } = await supabase
           .from("projects")
@@ -98,13 +107,21 @@ export function ProjectFormDialog({ open, onClose, project, onSuccess }: Project
         if (error) throw error;
         toast.success("Projet mis à jour avec succès");
       } else {
+        // For new projects, ensure we have the required fields
+        const newProject = {
+          ...formattedValues,
+          delay_days: 0,
+          issues: 0,
+          // Ensure name and budget are explicitly set
+          name: formattedValues.name,
+          budget: formattedValues.budget,
+          status: formattedValues.status || "Planification",
+          progress: formattedValues.progress || 0
+        };
+
         const { error } = await supabase
           .from("projects")
-          .insert([{
-            ...formattedValues,
-            delay_days: 0,
-            issues: 0,
-          }]);
+          .insert([newProject]);
 
         if (error) throw error;
         toast.success("Projet créé avec succès");
