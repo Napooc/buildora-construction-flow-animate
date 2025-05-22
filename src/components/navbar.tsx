@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { MobileNav } from "@/components/mobile-nav";
 import { ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 interface NavbarProps {
   activeSection?: string;
@@ -12,9 +14,8 @@ interface NavbarProps {
 
 const navItems = [
   { label: "Accueil", href: "#home", section: "home" },
-  { label: "Fonctionnalités", href: "#features", section: "features" },
-  { label: "Démonstration", href: "#showcase", section: "showcase" },
-  { label: "Administration", href: "#admin-dashboard", section: "admin-dashboard" },
+  { label: "Fonctionnalités", href: "/fonctionnalites", section: "features" },
+  { label: "Démonstration", href: "/demo", section: "showcase" },
   { label: "Témoignages", href: "#testimonials", section: "testimonials" },
   { label: "Tarifs", href: "#pricing", section: "pricing" },
   { label: "Contact", href: "#contact", section: "contact" },
@@ -24,6 +25,7 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const { isAdmin, user, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,6 +49,8 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
   }, [lastScrollY]);
 
   const handleNavItemClick = (section: string, e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (section.startsWith("#")) return; // Let default behavior for regular hash links
+    
     e.preventDefault();
     if (onSectionChange) {
       onSectionChange(section);
@@ -66,29 +70,65 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
       <div className="container flex items-center justify-between">
         <Logo />
         <nav className="hidden lg:flex items-center space-x-1">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              onClick={(e) => handleNavItemClick(item.section, e)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                activeSection === item.section
-                  ? "text-morocco-terracotta"
-                  : "text-morocco-navy hover:text-morocco-terracotta"
-              }`}
+          {navItems.map((item) => {
+            // Determine if this is a hash link or a regular page link
+            const isHashLink = item.href.startsWith("#");
+            
+            return isHashLink ? (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={(e) => handleNavItemClick(item.section, e)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                  activeSection === item.section
+                    ? "text-morocco-terracotta"
+                    : "text-morocco-navy hover:text-morocco-terracotta"
+                }`}
+              >
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 text-morocco-navy hover:text-morocco-terracotta`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+          
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 text-morocco-navy hover:text-morocco-terracotta"
             >
-              {item.label}
-            </a>
-          ))}
+              Admin
+            </Link>
+          )}
         </nav>
         <div className="hidden lg:flex items-center space-x-4">
-          <Button variant="outline" className="border-morocco-blue text-morocco-blue hover:bg-morocco-blue/10">
-            Se connecter
-          </Button>
-          <Button className="bg-morocco-blue hover:bg-morocco-deep-blue text-white group">
-            S'inscrire
-            <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
-          </Button>
+          {user ? (
+            <Button 
+              variant="outline" 
+              className="border-morocco-blue text-morocco-blue hover:bg-morocco-blue/10"
+              onClick={() => signOut()}
+            >
+              Se déconnecter
+            </Button>
+          ) : (
+            <>
+              <Link to="/admin/login">
+                <Button variant="outline" className="border-morocco-blue text-morocco-blue hover:bg-morocco-blue/10">
+                  Se connecter
+                </Button>
+              </Link>
+              <Button className="bg-morocco-blue hover:bg-morocco-deep-blue text-white group">
+                S'inscrire
+                <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
+              </Button>
+            </>
+          )}
         </div>
         <MobileNav navItems={navItems} />
       </div>
