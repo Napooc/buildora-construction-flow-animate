@@ -33,25 +33,21 @@ const dashboardImages = [
     description: "Vue d'ensemble de tous vos projets en cours"
   },
   {
-    src: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+    src: "/lovable-uploads/d54f7138-4b3b-4e86-ae87-a57f0b6fda18.png",
     alt: "Gestion des tâches",
     description: "Organisation visuelle de vos tâches avec Kanban"
   },
   {
-    src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+    src: "/lovable-uploads/855b0fd1-275b-4fb1-8299-8b96609a381b.png",
     alt: "Suivi des ressources",
     description: "Gestion optimisée de vos équipements et matériaux"
   },
   {
-    src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+    src: "h/lovable-uploads/855b0fd1-275b-4fb1-8299-8b96609a381b.png",
     alt: "Journal de chantier",
     description: "Documentation quotidienne de l'avancement des travaux"
   },
-  {
-    src: "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
-    alt: "Notifications et alertes",
-    description: "Système d'alertes pour rester informé des échéances"
-  },
+ 
 ];
 
 const features = [
