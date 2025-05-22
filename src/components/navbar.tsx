@@ -40,28 +40,14 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
       }
       
       setLastScrollY(currentScrollY);
-      
-      // Update active section based on scroll position
-      if (onSectionChange) {
-        const sections = navItems.map(item => item.section);
-        for (const section of sections.reverse()) {
-          const element = document.getElementById(section);
-          if (element) {
-            const rect = element.getBoundingClientRect();
-            if (rect.top <= 100) {
-              onSectionChange(section);
-              break;
-            }
-          }
-        }
-      }
     };
     
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY, onSectionChange]);
+  }, [lastScrollY]);
 
-  const handleNavItemClick = (section: string) => {
+  const handleNavItemClick = (section: string, e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
     if (onSectionChange) {
       onSectionChange(section);
     }
@@ -84,14 +70,7 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
             <a
               key={item.href}
               href={item.href}
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavItemClick(item.section);
-                const element = document.getElementById(item.section);
-                if (element) {
-                  element.scrollIntoView({ behavior: "smooth" });
-                }
-              }}
+              onClick={(e) => handleNavItemClick(item.section, e)}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                 activeSection === item.section
                   ? "text-morocco-terracotta"

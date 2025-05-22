@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { HeroSection } from "@/components/hero-section";
 import { FeaturesSection } from "@/components/features-section";
@@ -20,9 +20,41 @@ const Index = () => {
     setActiveSection(section);
     const element = document.getElementById(section);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      window.scrollTo({
+        top: element.offsetTop - 80, // Adjust offset to account for fixed navbar
+        behavior: "smooth"
+      });
     }
   };
+  
+  // Handle scrolling and section detection
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 100; // Add offset for better detection
+      
+      const sections = [
+        "home",
+        "features",
+        "showcase",
+        "admin-dashboard",
+        "testimonials",
+        "pricing",
+        "contact"
+      ];
+      
+      // Find the current section based on scroll position
+      for (const section of [...sections].reverse()) {
+        const element = document.getElementById(section);
+        if (element && scrollPosition >= element.offsetTop) {
+          setActiveSection(section);
+          break;
+        }
+      }
+    };
+    
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
