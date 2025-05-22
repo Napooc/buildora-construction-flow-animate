@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
@@ -21,91 +21,178 @@ import {
   Cell
 } from 'recharts';
 import { motion } from "framer-motion";
-import { CalendarDays, Users, Clock, ChevronRight, AlertTriangle, CheckCircle } from "lucide-react";
-
-const progressData = [
-  { name: 'Jan', progress: 20 },
-  { name: 'Fév', progress: 35 },
-  { name: 'Mar', progress: 45 },
-  { name: 'Avr', progress: 60 },
-  { name: 'Mai', progress: 75 },
-  { name: 'Juin', progress: 85 },
-  { name: 'Juil', progress: 95 },
-];
-
-const projectData = [
-  {
-    id: 1,
-    name: "Résidence Les Oliviers",
-    status: "En cours",
-    progress: 75,
-    deadline: "2025-08-15",
-    budget: "2,450,000 €",
-    teamSize: 12,
-    delayDays: 0,
-    location: "Casablanca",
-    issues: 2
-  },
-  {
-    id: 2,
-    name: "Tour Jasmin Business Center",
-    status: "En cours",
-    progress: 45,
-    deadline: "2025-12-01",
-    budget: "8,750,000 €",
-    teamSize: 28,
-    delayDays: 5,
-    location: "Rabat",
-    issues: 4
-  },
-  {
-    id: 3,
-    name: "Complexe Hôtelier Atlas View",
-    status: "Planification",
-    progress: 15,
-    deadline: "2026-06-30",
-    budget: "12,300,000 €",
-    teamSize: 0,
-    delayDays: 0,
-    location: "Marrakech",
-    issues: 0
-  },
-  {
-    id: 4,
-    name: "Parc Résidentiel Les Dunes",
-    status: "Terminé",
-    progress: 100,
-    deadline: "2024-12-10",
-    budget: "5,800,000 €",
-    teamSize: 0,
-    delayDays: 12,
-    location: "Agadir",
-    issues: 0
-  },
-  {
-    id: 5,
-    name: "Centre Commercial Al Medina",
-    status: "En cours",
-    progress: 60,
-    deadline: "2025-09-22",
-    budget: "14,200,000 €",
-    teamSize: 34,
-    delayDays: 0,
-    location: "Tanger",
-    issues: 1
-  }
-];
-
-const distributionData = [
-  { name: 'En cours', value: 3 },
-  { name: 'Planification', value: 1 },
-  { name: 'Terminé', value: 1 }
-];
+import { 
+  CalendarDays, 
+  Users, 
+  Clock, 
+  ChevronRight, 
+  AlertTriangle, 
+  CheckCircle,
+  Plus,
+  Pencil,
+  Trash2,
+  Loader2
+} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { ProjectFormDialog } from "./project-form-dialog";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const COLORS = ['#1A5F7A', '#C35831', '#D9A566', '#0B3C5D', '#E6D7B9'];
 
 export function ProjectsOverview() {
   const [view, setView] = useState('grid');
+  const [projects, setProjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [projectFormOpen, setProjectFormOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState(null);
+  const [projectStats, setProjectStats] = useState({
+    totalBudget: 0,
+    avgProgress: 0,
+    onTimePercentage: 0,
+    resolvedIssuesPercentage: 0
+  });
+  
+  const [progressData, setProgressData] = useState([]);
+  const [distributionData, setDistributionData] = useState([]);
+  
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+  
+  const fetchProjects = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
+      
+      console.log("Fetched projects:", data);
+      setProjects(data || []);
+      
+      // Calculate stats
+      if (data && data.length > 0) {
+        calculateStats(data);
+        generateChartData(data);
+      }
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+      toast.error("Impossible de charger les projets");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const calculateStats = (data) => {
+    // Total budget
+    const totalBudget = data.reduce((sum, project) => sum + Number(project.budget), 0);
+    
+    // Average progress
+    const avgProgress = Math.round(data.reduce((sum, project) => sum + project.progress, 0) / data.length);
+    
+    // On-time projects percentage
+    const onTimeProjects = data.filter(project => project.delay_days === 0).length;
+    const onTimePercentage = Math.round((onTimeProjects / data.length) * 100);
+    
+    // Issues resolved calculation
+    const totalIssues = data.reduce((sum, project) => sum + project.issues, 0);
+    // This is a placeholder since we don't have resolved issues data
+    const resolvedIssuesPercentage = 93; // Mock data for now
+    
+    setProjectStats({
+      totalBudget,
+      avgProgress,
+      onTimePercentage,
+      resolvedIssuesPercentage
+    });
+  };
+  
+  const generateChartData = (data) => {
+    // Generate mock progress data
+    // In a real app, you might have historical data
+    const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil'];
+    const progress = [20, 35, 45, 60, 75, 85, 95];
+    
+    setProgressData(months.map((month, i) => ({ name: month, progress: progress[i] })));
+    
+    // Distribution data based on status
+    const statusCounts = data.reduce((counts, project) => {
+      counts[project.status] = (counts[project.status] || 0) + 1;
+      return counts;
+    }, {});
+    
+    setDistributionData(
+      Object.entries(statusCounts).map(([name, value]) => ({ name, value }))
+    );
+  };
+  
+  const openCreateForm = () => {
+    setSelectedProject(null);
+    setProjectFormOpen(true);
+  };
+  
+  const openEditForm = (project) => {
+    setSelectedProject(project);
+    setProjectFormOpen(true);
+  };
+  
+  const confirmDelete = (project) => {
+    setProjectToDelete(project);
+    setDeleteDialogOpen(true);
+  };
+  
+  const deleteProject = async () => {
+    if (!projectToDelete) return;
+    
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .delete()
+        .eq('id', projectToDelete.id);
+        
+      if (error) throw error;
+      
+      toast.success("Projet supprimé avec succès");
+      fetchProjects();
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      toast.error("Erreur lors de la suppression du projet");
+    } finally {
+      setDeleteDialogOpen(false);
+      setProjectToDelete(null);
+    }
+  };
+  
+  const formatBudget = (budget) => {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR',
+      maximumFractionDigits: 0
+    }).format(budget);
+  };
+  
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 text-morocco-blue animate-spin" />
+        <span className="ml-2 text-morocco-blue">Chargement des projets...</span>
+      </div>
+    );
+  }
   
   return (
     <motion.div
@@ -124,14 +211,29 @@ export function ProjectsOverview() {
         </motion.h2>
         
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" onClick={() => setView('grid')}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setView('grid')}
+            className={view === 'grid' ? 'bg-gray-100' : ''}
+          >
             Grille
           </Button>
-          <Button variant="outline" size="sm" onClick={() => setView('list')}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setView('list')}
+            className={view === 'list' ? 'bg-gray-100' : ''}
+          >
             Liste
           </Button>
-          <Button variant="default" size="sm" className="bg-morocco-blue hover:bg-morocco-deep-blue">
-            Nouveau Projet
+          <Button 
+            variant="default" 
+            size="sm" 
+            className="bg-morocco-blue hover:bg-morocco-deep-blue"
+            onClick={openCreateForm}
+          >
+            <Plus className="h-4 w-4 mr-1" /> Nouveau Projet
           </Button>
         </div>
       </div>
@@ -211,7 +313,7 @@ export function ProjectsOverview() {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-500">Budget total des projets</span>
-                  <span className="font-semibold">43,500,000 €</span>
+                  <span className="font-semibold">{formatBudget(projectStats.totalBudget)}</span>
                 </div>
                 <Progress value={65} className="h-2" />
               </div>
@@ -219,17 +321,17 @@ export function ProjectsOverview() {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-500">Progression moyenne</span>
-                  <span className="font-semibold">59%</span>
+                  <span className="font-semibold">{projectStats.avgProgress}%</span>
                 </div>
-                <Progress value={59} className="h-2" />
+                <Progress value={projectStats.avgProgress} className="h-2" />
               </div>
               
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-500">Projets dans les temps</span>
-                  <span className="font-semibold">80%</span>
+                  <span className="font-semibold">{projectStats.onTimePercentage}%</span>
                 </div>
-                <Progress value={80} className="h-2 bg-green-100">
+                <Progress value={projectStats.onTimePercentage} className="h-2 bg-green-100">
                   <div className="bg-green-500 h-full w-[var(--progress)]"></div>
                 </Progress>
               </div>
@@ -237,9 +339,9 @@ export function ProjectsOverview() {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-500">Problèmes résolus</span>
-                  <span className="font-semibold">93%</span>
+                  <span className="font-semibold">{projectStats.resolvedIssuesPercentage}%</span>
                 </div>
-                <Progress value={93} className="h-2 bg-blue-100">
+                <Progress value={projectStats.resolvedIssuesPercentage} className="h-2 bg-blue-100">
                   <div className="bg-blue-500 h-full w-[var(--progress)]"></div>
                 </Progress>
               </div>
@@ -255,63 +357,153 @@ export function ProjectsOverview() {
         </Card>
       </div>
       
-      {view === 'grid' ? (
+      {projects.length === 0 ? (
+        <Card className="text-center py-12">
+          <CardContent>
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="rounded-full bg-gray-100 p-4">
+                <AlertTriangle className="h-8 w-8 text-morocco-gold" />
+              </div>
+              <h3 className="text-lg font-medium">Aucun projet trouvé</h3>
+              <p className="text-sm text-gray-500 max-w-sm">
+                Vous n'avez pas encore créé de projet. Cliquez sur le bouton ci-dessous pour commencer.
+              </p>
+              <Button 
+                onClick={openCreateForm}
+                className="mt-2 bg-morocco-blue hover:bg-morocco-deep-blue"
+              >
+                <Plus className="h-4 w-4 mr-1" /> Créer un projet
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : view === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {projectData.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+          {projects.map((project, index) => (
+            <ProjectCard 
+              key={project.id} 
+              project={project} 
+              index={index} 
+              onEdit={() => openEditForm(project)}
+              onDelete={() => confirmDelete(project)}
+            />
           ))}
         </div>
       ) : (
         <Card>
           <CardContent className="p-0">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="p-4 text-left">Projet</th>
-                  <th className="p-4 text-left">Statut</th>
-                  <th className="p-4 text-left">Progrès</th>
-                  <th className="p-4 text-left">Budget</th>
-                  <th className="p-4 text-left">Équipe</th>
-                  <th className="p-4 text-left">Retard</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projectData.map((project) => (
-                  <tr key={project.id} className="border-b hover:bg-gray-50 cursor-pointer">
-                    <td className="p-4">
-                      <div className="font-medium">{project.name}</div>
-                      <div className="text-sm text-gray-500">{project.location}</div>
-                    </td>
-                    <td className="p-4">
-                      <StatusBadge status={project.status} />
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center">
-                        <Progress value={project.progress} className="h-2 w-24 mr-2" />
-                        <span>{project.progress}%</span>
-                      </div>
-                    </td>
-                    <td className="p-4">{project.budget}</td>
-                    <td className="p-4">{project.teamSize > 0 ? project.teamSize : '-'}</td>
-                    <td className="p-4">
-                      {project.delayDays > 0 ? (
-                        <span className="text-red-500">{project.delayDays} jours</span>
-                      ) : (
-                        <span className="text-green-500">Dans les temps</span>
-                      )}
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="p-4 text-left">Projet</th>
+                    <th className="p-4 text-left">Statut</th>
+                    <th className="p-4 text-left">Progrès</th>
+                    <th className="p-4 text-left">Budget</th>
+                    <th className="p-4 text-left">Équipe</th>
+                    <th className="p-4 text-left">Retard</th>
+                    <th className="p-4 text-left">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {projects.map((project) => (
+                    <tr key={project.id} className="border-b hover:bg-gray-50">
+                      <td className="p-4">
+                        <div className="font-medium">{project.name}</div>
+                        <div className="text-sm text-gray-500">{project.location}</div>
+                      </td>
+                      <td className="p-4">
+                        <StatusBadge status={project.status} />
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center">
+                          <Progress value={project.progress} className="h-2 w-24 mr-2" />
+                          <span>{project.progress}%</span>
+                        </div>
+                      </td>
+                      <td className="p-4">{formatBudget(project.budget)}</td>
+                      <td className="p-4">{project.team_size > 0 ? project.team_size : '-'}</td>
+                      <td className="p-4">
+                        {project.delay_days > 0 ? (
+                          <span className="text-red-500">{project.delay_days} jours</span>
+                        ) : (
+                          <span className="text-green-500">Dans les temps</span>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        <div className="flex space-x-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => openEditForm(project)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="text-red-500 hover:bg-red-50"
+                            onClick={() => confirmDelete(project)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </CardContent>
         </Card>
       )}
+      
+      {/* Project Form Dialog */}
+      <ProjectFormDialog
+        open={projectFormOpen}
+        onClose={() => setProjectFormOpen(false)}
+        project={selectedProject}
+        onSuccess={fetchProjects}
+      />
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous sûr?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action ne peut pas être annulée. Le projet {projectToDelete?.name} sera définitivement supprimé.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={deleteProject}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </motion.div>
   );
 }
 
-function ProjectCard({ project, index }) {
+function ProjectCard({ project, index, onEdit, onDelete }) {
+  const formatBudget = (budget) => {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR',
+      maximumFractionDigits: 0
+    }).format(budget);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "-";
+    return new Date(dateString).toLocaleDateString('fr-FR');
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -324,7 +516,7 @@ function ProjectCard({ project, index }) {
           <div className="flex justify-between items-start">
             <div>
               <CardTitle className="text-lg">{project.name}</CardTitle>
-              <CardDescription>{project.location}</CardDescription>
+              <CardDescription>{project.location || "Emplacement non spécifié"}</CardDescription>
             </div>
             <StatusBadge status={project.status} />
           </div>
@@ -342,20 +534,20 @@ function ProjectCard({ project, index }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center text-sm">
                 <CalendarDays className="h-4 w-4 mr-2 text-morocco-blue" />
-                <span>Échéance: {new Date(project.deadline).toLocaleDateString()}</span>
+                <span>Échéance: {formatDate(project.deadline)}</span>
               </div>
               <div className="flex items-center text-sm">
                 <Users className="h-4 w-4 mr-2 text-morocco-blue" />
-                <span>Équipe: {project.teamSize > 0 ? project.teamSize : '-'}</span>
+                <span>Équipe: {project.team_size > 0 ? project.team_size : '-'}</span>
               </div>
             </div>
             
             <div className="flex justify-between items-center">
-              <span className="font-medium">{project.budget}</span>
-              {project.delayDays > 0 && (
+              <span className="font-medium">{formatBudget(project.budget)}</span>
+              {project.delay_days > 0 && (
                 <div className="flex items-center text-amber-600 text-sm">
                   <Clock className="h-4 w-4 mr-1" />
-                  <span>Retard: {project.delayDays} jours</span>
+                  <span>Retard: {project.delay_days} jours</span>
                 </div>
               )}
               
@@ -366,7 +558,7 @@ function ProjectCard({ project, index }) {
                 </div>
               )}
               
-              {project.issues === 0 && project.delayDays === 0 && project.status !== 'Terminé' && (
+              {project.issues === 0 && project.delay_days === 0 && project.status !== 'Terminé' && (
                 <div className="flex items-center text-green-600 text-sm">
                   <CheckCircle className="h-4 w-4 mr-1" />
                   <span>Dans les temps</span>
@@ -374,9 +566,27 @@ function ProjectCard({ project, index }) {
               )}
             </div>
             
-            <Button variant="outline" size="sm" className="w-full">
-              Voir les détails
-            </Button>
+            <div className="flex space-x-2">
+              <Button variant="outline" size="sm" className="w-full">
+                Voir les détails
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="p-0 w-10"
+                onClick={onEdit}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="p-0 w-10 text-red-500 hover:bg-red-50"
+                onClick={onDelete}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -26,6 +26,7 @@ import {
   Bell
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "sonner";
 
 export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
@@ -77,25 +78,38 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       // Get unread message count
-      const { count, error } = await supabase
+      const { count: messageCount, error: messageError } = await supabase
         .from('contact_messages')
         .select('*', { count: 'exact', head: true })
         .eq('read', false);
           
-      if (!error && count !== null) {
-        console.log("Found", count, "unread messages");
-        setUnreadMessages(count);
-      } else if (error) {
-        console.error("Error fetching message count:", error);
+      if (!messageError && messageCount !== null) {
+        console.log("Found", messageCount, "unread messages");
+        setUnreadMessages(messageCount);
+      } else if (messageError) {
+        console.error("Error fetching message count:", messageError);
       }
 
-      // Mock data for demo - in a real scenario, fetch from database
-      setActiveProjects(5);
+      // Get active projects count
+      const { count: projectCount, error: projectError } = await supabase
+        .from('projects')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'En cours');
+
+      if (!projectError && projectCount !== null) {
+        console.log("Found", projectCount, "active projects");
+        setActiveProjects(projectCount);
+      } else if (projectError) {
+        console.error("Error fetching project count:", projectError);
+      }
+
+      // Mock data for other stats - in a real app, fetch from database
       setPendingTasks(12);
       setResourceCount(24);
       setTeamMembers(8);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
+      toast.error("Erreur lors du chargement des données");
     } finally {
       setIsLoading(false);
     }

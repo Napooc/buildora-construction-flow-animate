@@ -143,6 +143,54 @@ export type Database = {
         }
         Relationships: []
       }
+      projects: {
+        Row: {
+          budget: number
+          created_at: string
+          deadline: string | null
+          delay_days: number | null
+          description: string | null
+          id: string
+          issues: number | null
+          location: string | null
+          name: string
+          progress: number
+          status: string
+          team_size: number | null
+          updated_at: string
+        }
+        Insert: {
+          budget: number
+          created_at?: string
+          deadline?: string | null
+          delay_days?: number | null
+          description?: string | null
+          id?: string
+          issues?: number | null
+          location?: string | null
+          name: string
+          progress?: number
+          status?: string
+          team_size?: number | null
+          updated_at?: string
+        }
+        Update: {
+          budget?: number
+          created_at?: string
+          deadline?: string | null
+          delay_days?: number | null
+          description?: string | null
+          id?: string
+          issues?: number | null
+          location?: string | null
+          name?: string
+          progress?: number
+          status?: string
+          team_size?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
