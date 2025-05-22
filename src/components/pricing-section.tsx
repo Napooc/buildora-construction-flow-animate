@@ -9,7 +9,7 @@ const pricingPlans = [
   {
     name: "Starter",
     description: "Parfait pour les petites équipes et projets simples",
-    price: { monthly: 29, annual: 290 },
+    price: { monthly: 290, annual: 2900 },
     features: [
       "Jusqu'à 5 projets",
       "Jusqu'à 10 utilisateurs",
@@ -30,7 +30,7 @@ const pricingPlans = [
   {
     name: "Pro",
     description: "Pour les équipes en croissance avec des projets multiples",
-    price: { monthly: 79, annual: 790 },
+    price: { monthly: 790, annual: 7900 },
     features: [
       "Projets illimités",
       "Jusqu'à 50 utilisateurs",
@@ -49,7 +49,7 @@ const pricingPlans = [
   {
     name: "Entreprise",
     description: "Solution complète pour les grandes organisations",
-    price: { monthly: 199, annual: 1990 },
+    price: { monthly: 1990, annual: 19900 },
     features: [
       "Projets illimités",
       "Utilisateurs illimités",
@@ -145,7 +145,7 @@ export function PricingSection() {
 
                 <div className="flex items-baseline mb-8">
                   <span className="text-4xl font-bold text-morocco-blue">
-                    {billingCycle === "monthly" ? plan.price.monthly : plan.price.annual}€
+                    {billingCycle === "monthly" ? plan.price.monthly : plan.price.annual} MAD
                   </span>
                   <span className="text-gray-500 ml-2">
                     /{billingCycle === "monthly" ? "mois" : "an"}
