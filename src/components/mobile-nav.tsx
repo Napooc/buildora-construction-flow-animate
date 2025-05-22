@@ -3,16 +3,42 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 interface MobileNavProps {
-  navItems: { label: string; href: string }[];
+  navItems: { label: string; href: string; section?: string }[];
 }
 
 export function MobileNav({ navItems }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut, isAdmin } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavItemClick = (href: string, section?: string) => {
+    setIsOpen(false);
+    
+    if (href.startsWith("#")) {
+      if (location.pathname === "/") {
+        // We're on the home page, so scroll to the section
+        const element = document.getElementById(section || href.substring(1));
+        if (element) {
+          setTimeout(() => {
+            window.scrollTo({
+              top: element.offsetTop - 80,
+              behavior: "smooth"
+            });
+          }, 100);
+        }
+      } else {
+        // Navigate to home with the hash
+        navigate("/" + href);
+      }
+    } else {
+      navigate(href);
+    }
+  };
 
   return (
     <div className="lg:hidden">
@@ -42,32 +68,20 @@ export function MobileNav({ navItems }: MobileNavProps) {
             </div>
             <nav className="p-4">
               <ul className="space-y-4">
-                {navItems.map((item) => {
-                  // Determine if this is a hash link or a regular page link
-                  const isHashLink = item.href.startsWith("#");
-                  
-                  return (
-                    <li key={item.href}>
-                      {isHashLink ? (
-                        <a
-                          href={item.href}
-                          className="block py-2 text-lg font-medium text-morocco-deep-blue hover:text-morocco-terracotta transition-colors"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {item.label}
-                        </a>
-                      ) : (
-                        <Link
-                          to={item.href}
-                          className="block py-2 text-lg font-medium text-morocco-deep-blue hover:text-morocco-terracotta transition-colors"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {item.label}
-                        </Link>
-                      )}
-                    </li>
-                  );
-                })}
+                {navItems.map((item) => (
+                  <li key={item.href}>
+                    <a
+                      href={item.href}
+                      className="block py-2 text-lg font-medium text-morocco-deep-blue hover:text-morocco-terracotta transition-colors"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleNavItemClick(item.href, item.section);
+                      }}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
                 
                 {isAdmin && (
                   <li>
@@ -84,7 +98,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
               <div className="mt-6 pt-6 border-t">
                 {user ? (
                   <Button 
-                    className="w-full mb-2 btn-primary"
+                    className="w-full mb-2 bg-morocco-blue hover:bg-morocco-deep-blue text-white"
                     onClick={() => {
                       signOut();
                       setIsOpen(false);
@@ -95,11 +109,11 @@ export function MobileNav({ navItems }: MobileNavProps) {
                 ) : (
                   <>
                     <Link to="/admin/login" onClick={() => setIsOpen(false)}>
-                      <Button className="w-full mb-2 btn-primary">
+                      <Button className="w-full mb-2 bg-morocco-blue hover:bg-morocco-deep-blue text-white">
                         Se connecter
                       </Button>
                     </Link>
-                    <Button variant="outline" className="w-full">
+                    <Button variant="outline" className="w-full border-morocco-blue text-morocco-blue hover:bg-morocco-blue/10">
                       S'inscrire
                     </Button>
                   </>

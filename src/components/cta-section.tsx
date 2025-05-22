@@ -1,6 +1,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export function CtaSection() {
   return (
@@ -20,13 +21,17 @@ export function CtaSection() {
               Rejoignez les entreprises qui améliorent leur efficacité et réduisent leurs coûts grâce à Buildora.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button size="lg" className="bg-white text-morocco-blue hover:bg-morocco-sand group">
-                Commencer gratuitement
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                Demander une démo
-              </Button>
+              <Link to="/demo">
+                <Button size="lg" className="bg-white text-morocco-blue hover:bg-morocco-sand group">
+                  Commencer gratuitement
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <Link to="/demo">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                  Demander une démo
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

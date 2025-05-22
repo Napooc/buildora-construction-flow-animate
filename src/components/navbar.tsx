@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { MobileNav } from "@/components/mobile-nav";
 import { ChevronDown } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 interface NavbarProps {
@@ -13,8 +13,7 @@ interface NavbarProps {
 }
 
 const navItems = [
-  { label: "Accueil", href: "#home", section: "home" },
-  { label: "Fonctionnalités", href: "/fonctionnalites", section: "features" },
+  { label: "Accueil", href: "/", section: "home" },
   { label: "Démonstration", href: "/demo", section: "showcase" },
   { label: "Témoignages", href: "#testimonials", section: "testimonials" },
   { label: "Tarifs", href: "#pricing", section: "pricing" },
@@ -26,6 +25,7 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const { isAdmin, user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,12 +48,28 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  const handleNavItemClick = (section: string, e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (section.startsWith("#")) return; // Let default behavior for regular hash links
-    
-    e.preventDefault();
-    if (onSectionChange) {
-      onSectionChange(section);
+  const handleNavItemClick = (section: string, href: string, e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      
+      // Check if we're on the home page
+      if (window.location.pathname === "/") {
+        // We're on the home page, so scroll to the section
+        if (onSectionChange) {
+          onSectionChange(section);
+        }
+        
+        const element = document.getElementById(section);
+        if (element) {
+          window.scrollTo({
+            top: element.offsetTop - 80,
+            behavior: "smooth"
+          });
+        }
+      } else {
+        // We're not on the home page, navigate to home and then to the section
+        navigate("/" + href);
+      }
     }
   };
 
@@ -78,7 +94,7 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
               <a
                 key={item.href}
                 href={item.href}
-                onClick={(e) => handleNavItemClick(item.section, e)}
+                onClick={(e) => handleNavItemClick(item.section, item.href, e)}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                   activeSection === item.section
                     ? "text-morocco-terracotta"

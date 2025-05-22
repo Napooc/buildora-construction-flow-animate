@@ -5,26 +5,73 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MoroccanPattern } from "@/components/ui/pattern";
 import { Mail, Phone, MapPin, Send, Check } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 export function ContactSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Submit to Supabase
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert([{
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject || "Contact Form Submission",
+          message: formData.message
+        }]);
+      
+      if (error) throw error;
+      
+      // Show success state
       setIsSubmitted(true);
+      toast({
+        title: "Message envoyé !",
+        description: "Merci de nous avoir contacté. Notre équipe vous répondra bientôt.",
+      });
       
       // Reset form after showing success
       setTimeout(() => {
         setIsSubmitted(false);
-        (e.target as HTMLFormElement).reset();
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: ""
+        });
       }, 3000);
-    }, 1500);
+      
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Un problème est survenu lors de l'envoi de votre message. Veuillez réessayer.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -128,6 +175,8 @@ export function ContactSection() {
                     <Input
                       id="name"
                       name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
                       required
                       placeholder="Votre nom"
                       className="w-full border-gray-300 focus:border-morocco-blue focus:ring-morocco-blue/20"
@@ -141,6 +190,8 @@ export function ContactSection() {
                       id="email"
                       name="email"
                       type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
                       required
                       placeholder="votre@email.com"
                       className="w-full border-gray-300 focus:border-morocco-blue focus:ring-morocco-blue/20"
@@ -155,6 +206,8 @@ export function ContactSection() {
                   <Input
                     id="subject"
                     name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
                     required
                     placeholder="Comment pouvons-nous vous aider ?"
                     className="w-full border-gray-300 focus:border-morocco-blue focus:ring-morocco-blue/20"
@@ -168,6 +221,8 @@ export function ContactSection() {
                   <Textarea
                     id="message"
                     name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
                     required
                     placeholder="Détaillez votre demande ici..."
                     rows={5}

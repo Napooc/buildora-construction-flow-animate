@@ -20,12 +20,12 @@ export function HeroSection() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 animate-fade-in" style={{ animationDelay: "0.2s" }}>
             <Link to="/demo">
-              <Button size="lg" className="btn-primary group">
+              <Button size="lg" className="btn-primary bg-morocco-blue hover:bg-morocco-deep-blue text-white group">
                 Demander une démo
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/fonctionnalites">
+            <Link to="/demo">
               <Button size="lg" variant="outline" className="border-morocco-blue text-morocco-blue hover:bg-morocco-blue/10">
                 Découvrir les fonctionnalités
               </Button>
