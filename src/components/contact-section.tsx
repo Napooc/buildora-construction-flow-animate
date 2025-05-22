@@ -117,6 +117,24 @@ export function ContactSection() {
             <ContactForm />
           </div>
         </div>
+        
+        {/* Google Map for Casablanca */}
+        <div className="mt-16 rounded-lg overflow-hidden shadow-lg">
+          <h3 className="text-xl font-bold text-morocco-deep-blue mb-4 text-center">Nous retrouver</h3>
+          <div className="h-96 w-full">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106376.72691573589!2d-7.6982314803901!3d33.57240299287259!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7cd4778aa113b%3A0xb06c1d84f310fd3!2sCasablanca%2C%20Maroc!5e0!3m2!1sfr!2s!4v1716510064559!5m2!1sfr!2s" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0 }} 
+              allowFullScreen={true} 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Google Map - Casablanca, Maroc"
+              className="rounded-lg"
+            ></iframe>
+          </div>
+        </div>
       </div>
     </section>
   );

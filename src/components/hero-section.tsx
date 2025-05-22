@@ -1,9 +1,20 @@
+
 import { ArrowRight, Building, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MoroccanPattern } from "@/components/ui/pattern";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { DemoRequestDialog } from "./demo-request-dialog";
+
 export function HeroSection() {
-  const navigate = useNavigate();
+  const [showDemoDialog, setShowDemoDialog] = useState(false);
+  
+  const scrollToContact = () => {
+    const contactElement = document.getElementById('contact');
+    if (contactElement) {
+      contactElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return <section className="relative pt-32 pb-20 overflow-hidden">
       <div className="container relative z-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -21,11 +32,14 @@ export function HeroSection() {
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 animate-fade-in" style={{
           animationDelay: "0.2s"
         }}>
-            <Button size="lg" className="btn-primary group">
+            <Button 
+              size="lg" 
+              className="btn-primary group"
+              onClick={() => setShowDemoDialog(true)}
+            >
               Demander une démo
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
-            
           </div>
           <div className="mt-12 flex flex-wrap justify-center gap-6 animate-fade-in" style={{
           animationDelay: "0.3s"
@@ -57,5 +71,11 @@ export function HeroSection() {
         </div>
       </div>
       <MoroccanPattern className="opacity-5 animate-rotate-slow" />
+      
+      <DemoRequestDialog 
+        open={showDemoDialog} 
+        onOpenChange={setShowDemoDialog}
+        scrollToContact={scrollToContact}
+      />
     </section>;
 }

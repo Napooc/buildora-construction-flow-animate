@@ -51,14 +51,6 @@ export function MobileNav({ navItems }: MobileNavProps) {
                   </li>
                 ))}
               </ul>
-              <div className="mt-6 pt-6 border-t">
-                <Button className="w-full mb-2 btn-primary">
-                  Se connecter
-                </Button>
-                <Button variant="outline" className="w-full">
-                  S'inscrire
-                </Button>
-              </div>
             </nav>
           </div>
         </div>

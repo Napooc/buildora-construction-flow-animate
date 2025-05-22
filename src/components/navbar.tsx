@@ -1,12 +1,13 @@
+
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { MobileNav } from "@/components/mobile-nav";
-import { ChevronDown } from "lucide-react";
+
 interface NavbarProps {
   activeSection?: string;
   onSectionChange?: (section: string) => void;
 }
+
 const navItems = [{
   label: "Accueil",
   href: "#home",
@@ -32,6 +33,7 @@ const navItems = [{
   href: "#contact",
   section: "contact"
 }];
+
 export function Navbar({
   activeSection,
   onSectionChange
@@ -39,6 +41,7 @@ export function Navbar({
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -57,12 +60,14 @@ export function Navbar({
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
   const handleNavItemClick = (section: string, e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (onSectionChange) {
       onSectionChange(section);
     }
   };
+
   return <header className={`fixed top-0 left-0 right-0 z-30 transition-all duration-300 transform ${isVisible ? "translate-y-0" : "-translate-y-full"} ${isScrolled ? "bg-white/90 shadow-md backdrop-blur-sm py-3" : "bg-transparent py-5"}`}>
       <div className="container flex items-center justify-between">
         <Logo />
@@ -72,8 +77,6 @@ export function Navbar({
             </a>)}
         </nav>
         <div className="hidden lg:flex items-center space-x-4">
-          
-          
         </div>
         <MobileNav navItems={navItems} />
       </div>
