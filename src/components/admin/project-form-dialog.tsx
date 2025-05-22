@@ -80,11 +80,17 @@ export function ProjectFormDialog({ open, onClose, project, onSuccess }: Project
   const onSubmit = async (values: ProjectFormValues) => {
     setIsLoading(true);
     try {
+      // Convert Date object to ISO string for Supabase
+      const formattedValues = {
+        ...values,
+        deadline: values.deadline ? values.deadline.toISOString() : null,
+      };
+
       if (isEditing) {
         const { error } = await supabase
           .from("projects")
           .update({
-            ...values,
+            ...formattedValues,
             updated_at: new Date().toISOString(),
           })
           .eq("id", project.id);
@@ -95,7 +101,7 @@ export function ProjectFormDialog({ open, onClose, project, onSuccess }: Project
         const { error } = await supabase
           .from("projects")
           .insert([{
-            ...values,
+            ...formattedValues,
             delay_days: 0,
             issues: 0,
           }]);
