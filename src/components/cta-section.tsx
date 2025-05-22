@@ -1,13 +1,9 @@
-
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-
 export function CtaSection() {
   const navigate = useNavigate();
-  
-  return (
-    <section className="py-20">
+  return <section className="py-20">
       <div className="container">
         <div className="max-w-4xl mx-auto bg-gradient-to-r from-morocco-blue to-morocco-deep-blue rounded-2xl p-10 text-white text-center relative overflow-hidden group hover:shadow-xl transition-all duration-300">
           <div className="absolute inset-0 opacity-10">
@@ -30,18 +26,10 @@ export function CtaSection() {
                 Commencer gratuitement
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-white text-white hover:bg-white/10"
-                onClick={() => navigate("/admin")}
-              >
-                Espace administrateur
-              </Button>
+              
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
