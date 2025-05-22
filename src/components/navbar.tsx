@@ -14,7 +14,6 @@ const navItems = [
   { label: "Accueil", href: "#home", section: "home" },
   { label: "Fonctionnalités", href: "#features", section: "features" },
   { label: "Démonstration", href: "#showcase", section: "showcase" },
-  { label: "Administration", href: "#admin-dashboard", section: "admin-dashboard" },
   { label: "Témoignages", href: "#testimonials", section: "testimonials" },
   { label: "Tarifs", href: "#pricing", section: "pricing" },
   { label: "Contact", href: "#contact", section: "contact" },
