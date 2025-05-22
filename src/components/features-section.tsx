@@ -28,7 +28,7 @@ import { motion } from "framer-motion";
 // Dashboard images for the feature showcase
 const dashboardImages = [
   {
-    src: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+    src: "/lovable-uploads/9d79e4ad-94cc-4248-a699-9a4c439b27a7.png",
     alt: "Tableau de bord principal",
     description: "Vue d'ensemble de tous vos projets en cours"
   },
