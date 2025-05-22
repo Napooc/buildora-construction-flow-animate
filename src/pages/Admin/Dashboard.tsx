@@ -6,12 +6,35 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminNavbar } from "@/components/admin/admin-navbar";
 import { ContactMessages } from "@/components/admin/contact-messages";
-import { AdminHome } from "@/components/admin/admin-home";
-import { BarChart, Users, FileText, Calendar, Loader2 } from "lucide-react";
+import { ProjectsOverview } from "@/components/admin/projects-overview";
+import { TaskBoard } from "@/components/admin/task-board";
+import { ResourceTracker } from "@/components/admin/resource-tracker";
+import { SiteLogViewer } from "@/components/admin/site-log-viewer";
+import { DocumentCenter } from "@/components/admin/document-center";
+import { TeamDirectory } from "@/components/admin/team-directory";
+import {
+  BarChart,
+  Users,
+  FileText,
+  Calendar,
+  Loader2,
+  PackageOpen,
+  ClipboardList,
+  FileImage,
+  FolderOpen,
+  UserCheck,
+  Bell
+} from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const [unreadNotifications, setUnreadNotifications] = useState(3);
+  const [activeProjects, setActiveProjects] = useState(0);
+  const [pendingTasks, setPendingTasks] = useState(0);
+  const [resourceCount, setResourceCount] = useState(0);
+  const [teamMembers, setTeamMembers] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,7 +61,7 @@ export default function AdminDashboard() {
         
         console.log("Valid admin session found:", session);
         
-        // Fetch messages and other data
+        // Fetch dashboard data
         fetchDashboardData();
       } catch (error) {
         console.error("Error parsing admin session:", error);
@@ -65,6 +88,12 @@ export default function AdminDashboard() {
       } else if (error) {
         console.error("Error fetching message count:", error);
       }
+
+      // Mock data for demo - in a real scenario, fetch from database
+      setActiveProjects(5);
+      setPendingTasks(12);
+      setResourceCount(24);
+      setTeamMembers(8);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -87,87 +116,148 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <AdminNavbar unreadMessages={unreadMessages} />
       
-      <div className="container py-8 px-4 flex-1">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="container py-8 px-4 flex-1"
+      >
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-morocco-deep-blue mb-2">Tableau de Bord</h1>
-          <p className="text-gray-600">Bienvenue dans votre espace administrateur Buildora</p>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="text-3xl font-bold text-morocco-deep-blue mb-2"
+          >
+            Tableau de Bord
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+            className="text-gray-600"
+          >
+            Bienvenue dans votre espace administrateur Buildora
+          </motion.p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Card className="hover:shadow-md transition-all border-l-4 border-l-morocco-blue">
-            <CardContent className="flex items-center p-6">
-              <div className="bg-morocco-blue/10 p-3 rounded-full mr-4">
-                <FileText className="h-6 w-6 text-morocco-blue" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Messages</p>
-                <h3 className="text-2xl font-bold text-morocco-deep-blue">{unreadMessages}</h3>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <AnimateKPI 
+            icon={<FileText className="h-6 w-6 text-morocco-blue" />}
+            title="Messages"
+            value={unreadMessages}
+            color="morocco-blue"
+            delay={0.1}
+          />
           
-          <Card className="hover:shadow-md transition-all border-l-4 border-l-morocco-gold">
-            <CardContent className="flex items-center p-6">
-              <div className="bg-morocco-gold/10 p-3 rounded-full mr-4">
-                <Users className="h-6 w-6 text-morocco-gold" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Visiteurs</p>
-                <h3 className="text-2xl font-bold text-morocco-deep-blue">1,245</h3>
-              </div>
-            </CardContent>
-          </Card>
+          <AnimateKPI 
+            icon={<Bell className="h-6 w-6 text-morocco-gold" />}
+            title="Notifications"
+            value={unreadNotifications}
+            color="morocco-gold"
+            delay={0.2}
+          />
+
+          <AnimateKPI 
+            icon={<Calendar className="h-6 w-6 text-morocco-terracotta" />}
+            title="Projets Actifs"
+            value={activeProjects}
+            color="morocco-terracotta"
+            delay={0.3}
+          />
           
-          <Card className="hover:shadow-md transition-all border-l-4 border-l-morocco-terracotta">
-            <CardContent className="flex items-center p-6">
-              <div className="bg-morocco-terracotta/10 p-3 rounded-full mr-4">
-                <BarChart className="h-6 w-6 text-morocco-terracotta" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Conversions</p>
-                <h3 className="text-2xl font-bold text-morocco-deep-blue">15%</h3>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="hover:shadow-md transition-all border-l-4 border-l-green-500">
-            <CardContent className="flex items-center p-6">
-              <div className="bg-green-500/10 p-3 rounded-full mr-4">
-                <Calendar className="h-6 w-6 text-green-500" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Projets</p>
-                <h3 className="text-2xl font-bold text-morocco-deep-blue">12</h3>
-              </div>
-            </CardContent>
-          </Card>
+          <AnimateKPI 
+            icon={<ClipboardList className="h-6 w-6 text-green-500" />}
+            title="Tâches en attente"
+            value={pendingTasks}
+            color="green-500"
+            delay={0.4}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+          <AnimateKPI 
+            icon={<PackageOpen className="h-6 w-6 text-purple-500" />}
+            title="Ressources"
+            value={resourceCount}
+            color="purple-500"
+            delay={0.5}
+            className="lg:col-span-1"
+          />
+
+          <AnimateKPI 
+            icon={<FileImage className="h-6 w-6 text-blue-500" />}
+            title="Journaux de site"
+            value={15}
+            color="blue-500"
+            delay={0.6}
+            className="lg:col-span-1"
+          />
+
+          <AnimateKPI 
+            icon={<UserCheck className="h-6 w-6 text-pink-500" />}
+            title="Équipe"
+            value={teamMembers}
+            color="pink-500"
+            delay={0.7}
+            className="lg:col-span-1"
+          />
         </div>
         
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList className="grid w-full max-w-md grid-cols-2 bg-morocco-blue/5 p-1">
-            <TabsTrigger 
-              value="overview"
-              className="data-[state=active]:bg-morocco-blue data-[state=active]:text-white"
-            >
+          <TabsList className="grid w-full max-w-4xl grid-cols-7 bg-morocco-blue/5 p-1">
+            <AnimatedTabTrigger value="overview" delay={0.1}>
               Aperçu
-            </TabsTrigger>
-            <TabsTrigger 
-              value="messages"
-              className="data-[state=active]:bg-morocco-blue data-[state=active]:text-white"
-            >
-              Messages de contact
-            </TabsTrigger>
+            </AnimatedTabTrigger>
+            <AnimatedTabTrigger value="projects" delay={0.2}>
+              Projets
+            </AnimatedTabTrigger>
+            <AnimatedTabTrigger value="tasks" delay={0.3}>
+              Tâches
+            </AnimatedTabTrigger>
+            <AnimatedTabTrigger value="resources" delay={0.4}>
+              Ressources
+            </AnimatedTabTrigger>
+            <AnimatedTabTrigger value="logs" delay={0.5}>
+              Journaux
+            </AnimatedTabTrigger>
+            <AnimatedTabTrigger value="documents" delay={0.6}>
+              Documents
+            </AnimatedTabTrigger>
+            <AnimatedTabTrigger value="messages" delay={0.7}>
+              Messages
+            </AnimatedTabTrigger>
           </TabsList>
           
-          <TabsContent value="overview" className="space-y-4 animate-fade-in">
-            <AdminHome />
-          </TabsContent>
+          <AnimatedTabContent value="overview">
+            <ProjectsOverview />
+          </AnimatedTabContent>
           
-          <TabsContent value="messages" className="space-y-4 animate-fade-in">
+          <AnimatedTabContent value="projects">
+            <ProjectsOverview />
+          </AnimatedTabContent>
+          
+          <AnimatedTabContent value="tasks">
+            <TaskBoard />
+          </AnimatedTabContent>
+          
+          <AnimatedTabContent value="resources">
+            <ResourceTracker />
+          </AnimatedTabContent>
+          
+          <AnimatedTabContent value="logs">
+            <SiteLogViewer />
+          </AnimatedTabContent>
+          
+          <AnimatedTabContent value="documents">
+            <DocumentCenter />
+          </AnimatedTabContent>
+          
+          <AnimatedTabContent value="messages">
             <ContactMessages />
-          </TabsContent>
+          </AnimatedTabContent>
         </Tabs>
-      </div>
+      </motion.div>
       
       <footer className="bg-white border-t border-gray-200 py-4">
         <div className="container text-center text-sm text-gray-500">
@@ -177,3 +267,58 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+// Animated Components
+const AnimateKPI = ({ icon, title, value, color, delay = 0, className = "" }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+    animate={{ opacity: 1, scale: 1, y: 0 }}
+    transition={{ delay, duration: 0.4 }}
+    className={`${className}`}
+    whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+  >
+    <Card className={`hover:shadow-md transition-all border-l-4 border-l-${color}`}>
+      <CardContent className="flex items-center p-6">
+        <div className={`bg-${color}/10 p-3 rounded-full mr-4`}>
+          {icon}
+        </div>
+        <div>
+          <p className="text-sm text-gray-500">{title}</p>
+          <h3 className="text-2xl font-bold text-morocco-deep-blue">{value}</h3>
+        </div>
+      </CardContent>
+    </Card>
+  </motion.div>
+);
+
+const AnimatedTabTrigger = ({ value, delay = 0, children }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay, duration: 0.3 }}
+    whileHover={{ y: -2 }}
+  >
+    <TabsTrigger 
+      value={value}
+      className="data-[state=active]:bg-morocco-blue data-[state=active]:text-white"
+    >
+      {children}
+    </TabsTrigger>
+  </motion.div>
+);
+
+const AnimatedTabContent = ({ value, children }) => (
+  <TabsContent value={value} className="space-y-4">
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={value}
+        initial={{ opacity: 0, x: 10 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -10 }}
+        transition={{ duration: 0.3 }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
+  </TabsContent>
+);
