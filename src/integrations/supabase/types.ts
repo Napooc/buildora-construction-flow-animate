@@ -9,85 +9,151 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      order_items: {
+      contact_messages: {
         Row: {
-          car_brand: string
-          car_id: string
-          car_image: string | null
-          car_model: string
-          car_price: number
-          car_year: number
-          created_at: string
+          date: string
+          email: string
           id: string
-          order_id: string
-          quantity: number
+          message: string
+          name: string
+          subject: string | null
         }
         Insert: {
-          car_brand: string
-          car_id: string
-          car_image?: string | null
-          car_model: string
-          car_price: number
-          car_year: number
-          created_at?: string
+          date?: string
+          email: string
           id?: string
-          order_id: string
-          quantity?: number
+          message: string
+          name: string
+          subject?: string | null
         }
         Update: {
-          car_brand?: string
-          car_id?: string
-          car_image?: string | null
-          car_model?: string
-          car_price?: number
-          car_year?: number
-          created_at?: string
+          date?: string
+          email?: string
           id?: string
-          order_id?: string
-          quantity?: number
+          message?: string
+          name?: string
+          subject?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "order_items_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       orders: {
         Row: {
           created_at: string
-          customer_city: string | null
-          customer_name: string
-          customer_phone: string
+          customer_info: Json
+          date: string
           id: string
-          order_number: string
+          items: Json
           status: string
           total: number
           updated_at: string
         }
         Insert: {
           created_at?: string
-          customer_city?: string | null
-          customer_name: string
-          customer_phone: string
+          customer_info: Json
+          date?: string
           id?: string
-          order_number: string
+          items: Json
           status?: string
           total: number
           updated_at?: string
         }
         Update: {
           created_at?: string
-          customer_city?: string | null
-          customer_name?: string
-          customer_phone?: string
+          customer_info?: Json
+          date?: string
           id?: string
-          order_number?: string
+          items?: Json
           status?: string
           total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      product_comments: {
+        Row: {
+          comment: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          product_id: string
+          rating: number | null
+        }
+        Insert: {
+          comment: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          product_id: string
+          rating?: number | null
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          product_id?: string
+          rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_comments_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          featured: boolean
+          id: string
+          images: string[]
+          name: string
+          old_price: number | null
+          on_sale: boolean
+          price: number
+          rating: number
+          sku: string
+          stock: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          featured?: boolean
+          id?: string
+          images: string[]
+          name: string
+          old_price?: number | null
+          on_sale?: boolean
+          price: number
+          rating?: number
+          sku: string
+          stock?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          featured?: boolean
+          id?: string
+          images?: string[]
+          name?: string
+          old_price?: number | null
+          on_sale?: boolean
+          price?: number
+          rating?: number
+          sku?: string
+          stock?: number
           updated_at?: string
         }
         Relationships: []
