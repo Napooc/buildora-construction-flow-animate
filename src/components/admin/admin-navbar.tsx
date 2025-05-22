@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Bell, LogOut, Mail, User, Settings, Home } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AdminNavbarProps {
   unreadMessages?: number;
