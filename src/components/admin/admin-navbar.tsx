@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Bell, LogOut, Mail, User } from "lucide-react";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase-client";
 
 interface AdminNavbarProps {
   unreadMessages?: number;
@@ -17,16 +16,29 @@ export function AdminNavbar({ unreadMessages = 0 }: AdminNavbarProps) {
   const [adminEmail, setAdminEmail] = useState<string>("");
   
   useEffect(() => {
-    const adminSession = localStorage.getItem("adminSession");
-    if (adminSession) {
+    const checkAdminSession = () => {
+      const adminSession = localStorage.getItem("adminSession");
+      if (!adminSession) {
+        navigate("/admin");
+        return;
+      }
+      
       try {
         const session = JSON.parse(adminSession);
+        if (!session || !session.isAuthenticated) {
+          navigate("/admin");
+          return;
+        }
+        
         setAdminEmail(session.email);
       } catch (error) {
         console.error("Error parsing admin session:", error);
+        navigate("/admin");
       }
-    }
-  }, []);
+    };
+    
+    checkAdminSession();
+  }, [navigate]);
   
   const handleLogout = () => {
     localStorage.removeItem("adminSession");

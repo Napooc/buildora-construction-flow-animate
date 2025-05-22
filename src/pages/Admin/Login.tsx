@@ -22,7 +22,7 @@ export default function AdminLogin() {
 
   useEffect(() => {
     // Check if admin is already logged in
-    const checkAdminSession = () => {
+    const checkAdminSession = async () => {
       const adminSession = localStorage.getItem("adminSession");
       
       if (adminSession) {
@@ -46,6 +46,8 @@ export default function AdminLogin() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    
+    console.log("Attempting login with:", { email, password });
 
     try {
       // Query the admin_users table to check credentials
@@ -55,13 +57,22 @@ export default function AdminLogin() {
         .eq("email", email.trim().toLowerCase())
         .single();
 
-      if (queryError || !data) {
+      console.log("Login query result:", { data, error: queryError });
+
+      if (queryError) {
+        console.error("Query error:", queryError);
         setError("Identifiants incorrects. Veuillez réessayer.");
         setIsLoading(false);
         return;
       }
 
-      // Compare passwords (in a real app, you'd use bcrypt.compare)
+      if (!data) {
+        setError("Utilisateur non trouvé");
+        setIsLoading(false);
+        return;
+      }
+
+      // Compare passwords
       if (data.password === password) {
         // Store admin session in localStorage
         localStorage.setItem("adminSession", JSON.stringify({
@@ -102,6 +113,9 @@ export default function AdminLogin() {
             <CardTitle className="text-2xl text-center text-morocco-deep-blue">Administration</CardTitle>
             <CardDescription className="text-center">
               Connectez-vous à votre espace administrateur
+            </CardDescription>
+            <CardDescription className="text-center text-morocco-terracotta font-semibold">
+              Email: admin@buildora.com | Mot de passe: temppassword123
             </CardDescription>
           </CardHeader>
           <CardContent>

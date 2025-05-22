@@ -2,10 +2,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase-client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
 import { AdminNavbar } from "@/components/admin/admin-navbar";
 import { ContactMessages } from "@/components/admin/contact-messages";
 import { AdminHome } from "@/components/admin/admin-home";
@@ -16,7 +14,6 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     const checkAdminSession = () => {
@@ -39,6 +36,7 @@ export default function AdminDashboard() {
         
         setIsAdmin(true);
       } catch (error) {
+        console.error("Error parsing admin session:", error);
         localStorage.removeItem("adminSession");
         navigate("/admin");
       } finally {
