@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase-client";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,6 +15,7 @@ interface ContactMessage {
   subject: string | null;
   message: string;
   date: string;
+  read: boolean;
 }
 
 export function ContactMessages() {
@@ -61,10 +62,9 @@ export function ContactMessages() {
       (message.subject && message.subject.toLowerCase().includes(searchTerm.toLowerCase())) ||
       message.message.toLowerCase().includes(searchTerm.toLowerCase());
     
-    // For demo purposes only - in a real app we'd track read/unread status
     if (filterType === "all") return searchMatch;
-    if (filterType === "unread") return searchMatch && Math.random() > 0.5;
-    if (filterType === "read") return searchMatch && Math.random() < 0.5;
+    if (filterType === "unread") return searchMatch && !message.read;
+    if (filterType === "read") return searchMatch && message.read;
     return searchMatch;
   });
 
@@ -194,7 +194,27 @@ export function ContactMessages() {
               <CardContent className="pt-4">
                 <p className="whitespace-pre-wrap text-gray-700">{message.message}</p>
                 <div className="flex justify-end mt-4 gap-2">
-                  <Button variant="outline" size="sm" className="text-xs">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-xs"
+                    onClick={async () => {
+                      try {
+                        await supabase
+                          .from('contact_messages')
+                          .update({ read: true })
+                          .eq('id', message.id);
+                        
+                        setMessages(prev => 
+                          prev.map(msg => 
+                            msg.id === message.id ? {...msg, read: true} : msg
+                          )
+                        );
+                      } catch (err) {
+                        console.error('Error marking message as read:', err);
+                      }
+                    }}
+                  >
                     Marquer comme lu
                   </Button>
                   <Button size="sm" className="text-xs bg-morocco-blue hover:bg-morocco-deep-blue">
