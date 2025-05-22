@@ -16,15 +16,15 @@ export function ShowcaseSection() {
   const getImageForTab = (tabId: string) => {
     switch (tabId) {
       case "dashboard":
-        return "https://images.unsplash.com/photo-1461749280684-dccba630e2f6";
+        return "/lovable-uploads/0bc97c12-fbf4-46d5-a202-d2f0d85c2051.png";
       case "tasks":
-        return "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7";
+        return "/lovable-uploads/6d543307-13c5-4c42-a238-9c7c46367ffb.png";
       case "resources":
-        return "https://images.unsplash.com/photo-1493397212122-2b85dda8106b";
+        return "/lovable-uploads/543080be-1847-4f3a-8472-44892616b2ed.png";
       case "reports":
-        return "https://images.unsplash.com/photo-1649972904349-6e44c42644a7";
+        return "/lovable-uploads/df8a2f69-033f-4aed-a20d-ac8ce51ecfbd.png";
       default:
-        return "https://images.unsplash.com/photo-1461749280684-dccba630e2f6";
+        return "/lovable-uploads/0bc97c12-fbf4-46d5-a202-d2f0d85c2051.png";
     }
   };
 
@@ -47,8 +47,8 @@ export function ShowcaseSection() {
         };
       case "reports":
         return {
-          title: "Rapports détaillés et analytiques",
-          description: "Générez des rapports automatisés pour suivre l'avancement du projet, les incidents et les performances de l'équipe.",
+          title: "Centre de documents et rapports",
+          description: "Accédez à tous vos documents de projet et générez des rapports détaillés pour suivre l'avancement et le budget.",
         };
       default:
         return {
@@ -104,11 +104,11 @@ export function ShowcaseSection() {
           </div>
           <div className="md:col-span-3 order-1 md:order-2">
             <div className="bg-white p-2 rounded-xl shadow-lg animate-fade-in">
-              <div className="relative aspect-[16/10] rounded-lg overflow-hidden">
+              <div className="relative aspect-video rounded-lg overflow-hidden">
                 <img
                   src={getImageForTab(activeTab)}
                   alt={content.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain border border-gray-200 rounded-lg"
                 />
                 <div className="absolute inset-0 bg-morocco-deep-blue/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                   <Button variant="secondary" className="btn-secondary">
